@@ -175,6 +175,13 @@ def generate_abbreviations(school_name):
                         for ab in abbrev_suffixes:
                             add(syllables[0] + ab)
                         break
+                # 첫 음절 + 대 + 사대 접미사 (건+대+사대부중 = 건대사대부중)
+                for suffix, abbrev_suffixes in TYPE_PATTERNS:
+                    if school_name.endswith(suffix):
+                        for ab in abbrev_suffixes:
+                            if ab.startswith("사대"):
+                                add(syllables[0] + "대" + ab)
+                        break
                 # 대학 이름 전체 + 축약접미사 (건국+대부중 = 건국대부중)
                 if len(syllables) >= 2:
                     for suffix, abbrev_suffixes in TYPE_PATTERNS:

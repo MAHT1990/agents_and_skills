@@ -28,9 +28,10 @@ description: 학교명에 대한 줄임말 후보 생성 SKILL. 다음 상황에
 
 ## Scripts
 
-| 파일 | 설명 | 사용법 |
-|------|------|--------|
-| `scripts/generate_alias.py` | 축약형 후보 생성 스크립트 | `python3 scripts/generate_alias.py <input_csv> <output_csv> [line_limit]` |
+| 파일                               | 설명                  | 사용법                                                                            |
+|----------------------------------|---------------------|--------------------------------------------------------------------------------|
+| `scripts/generate_alias_high.py` | 고등학교 축약형 후보 생성 스크립트 | `python3 scripts/generate_alias_high.py <input_csv> <output_csv> [line_limit]` |
+| `scripts/generate_alias_middle.py` | 중학교 축약형 후보 생성 스크립트 | `python3 scripts/generate_alias_middle.py <input_csv> <output_csv> [line_limit]` |
 
 ## Steps
 
@@ -41,7 +42,7 @@ description: 학교명에 대한 줄임말 후보 생성 SKILL. 다음 상황에
 ### Step 2. 스크립트 실행
 
 ```bash
-python3 scripts/generate_alias.py "$$SCHOOL_LIST_FILE" "$$OUTPUT_FILE" $$LINE_LIMIT
+python3 scripts/generate_alias_<school_type>.py "$$SCHOOL_LIST_FILE" "$$OUTPUT_FILE" $$LINE_LIMIT
 ```
 
 ### Step 3. 결과 검증
@@ -58,7 +59,7 @@ python3 scripts/generate_alias.py "$$SCHOOL_LIST_FILE" "$$OUTPUT_FILE" $$LINE_LI
 
 ## 축약 로직 요약
 
-> 상세 규칙은 `references/pattern_highschool.md` 참조.
+> 상세 규칙은 `references/pattern_highschool.md`과 `references/pattern_middleschool.md` 참조.
 
 ### A. 유형 접미사 치환
 
@@ -92,5 +93,5 @@ python3 scripts/generate_alias.py "$$SCHOOL_LIST_FILE" "$$OUTPUT_FILE" $$LINE_LI
 
 ### E. Edge Case 경고
 
-- **1:N 모호성 168건**: 하나의 축약형이 복수 학교에 매핑 (경기고 → 6교, 부산고 → 8교 등)
+- **1:N 모호성**: 하나의 축약형이 복수 학교에 매핑
 - **역확장 오류 주의**: 부여고≠부+여자고등학교, 경남고≠경+남자고등학교

@@ -19,3 +19,6 @@
 !skills/**
 !agents/
 !agents/**
+
+# .DS_Store 파일 무시 (macOS에서 생성되는 시스템 파일)
+.DS_Store

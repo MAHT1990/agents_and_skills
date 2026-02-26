@@ -19,3 +19,10 @@
 !skills/**
 !agents/
 !agents/**
+
+# IDE
+agents/.idea/
+
+# OS
+.DS_Store
+Thumbs.db

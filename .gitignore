@@ -1,0 +1,21 @@
+# 관리할 파일을 명시할 목적으로 작성됨.
+# skills, agents 만을 관리할 예정이므로, 다른 파일들은 모두 무시하도록 설정함.
+
+# 전체 차단
+*
+
+# 관리: 설정 파일
+!.gitignore
+
+# 관리: README 파일
+!README.md
+
+# 관리: skills, agents 디렉토리
+# !skills/ - skills 디렉토리를 관리 대상으로 포함
+# !skills/** - skills 디렉토리 내의 모든 파일과 하위 디렉토리를 관리 대상으로 포함
+# !agents/ - agents 디렉토리를 관리 대상으로 포함
+# !agents/** - agents 디렉토리 내의 모든 파일과 하위 디렉
+!skills/
+!skills/**
+!agents/
+!agents/**

@@ -21,7 +21,8 @@
 !agents/**
 
 # IDE
-agents/.idea/
+.idea/
+.vscode/
 
 # OS
 .DS_Store

@@ -3,7 +3,9 @@ name: ml_preprocessor
 description: EDA 분석 결과를 기반으로 결측값 처리, 인코딩, 스케일링, 특성공학 등 다양한 전처리 파이프라인을 구성하여 복수의 전처리된 데이터셋을 출력하는 전처리 전문 에이전트.
 model: sonnet
 tools: Bash, Read, Write
+color: orange
 skills:
+  - machine_learner
 ---
 
 # Variables

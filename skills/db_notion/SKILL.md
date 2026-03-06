@@ -15,19 +15,25 @@ description: prisma.schema 등의 Database 정도를 가진 문서를 토대로,
 
 # Action
 ## Description
-- Schema를 분석하여, 주요 METADATA를 $$DB_Main_Page 형식에 따라 신규 페이지 생성/작성
-- 각 도메인에 대한 분석내용을 $$DB_Domain_Page 형식에 따라 작성
-	- $$DB_Main_Page 이하 도메인별 페이지 생성
-	- 분석 내용을 $$DB_Domain_Page 형식에 따라 작성
+- Schema를 분석하여, 주요 METADATA를 $$DB_Main_Page 형식에 따라 신규 페이지 생성(기존 페이지 존재시 수정)
+- 기존 페이지 존재여부 확인.
+  - Case. 신규 작성시
+    - 각 도메인에 대한 분석내용을 $$DB_Domain_Page 형식에 따라 생성
+        - $$DB_Main_Page 이하 도메인별 페이지 생성
+        - 분석 내용을 $$DB_Domain_Page 형식에 따라 작성
+  - Case. 수정시
+    - 기존 페이지 존재시, 기존 페이지 분석
+    - 기존 내용과 분석 내용 대조
+    - 수정사항 발생시, 수정
 
 ## Step 1. Schema 분석
 - $$Schema_path 제공된 Schema 분석
 - $$Schema_path 재귀적으로 Schema 분석
 
-## Step 2. 메타데이터 페이지(메인 페이지) 작성
+## Step 2. 메타데이터 페이지(메인 페이지) 작성/수정
 - $$DB_Main_Page 에 주요 METADATA 작성
 
-## Step 3. 도메인별 하위 페이지 작성
+## Step 3. 도메인별 하위 페이지 작성/수정
 - 도메인별, $$DB_Main_Page 이하에 페이지 생성.
 - 분석 내용을 $$DB_Domain_Page 형식에 맞게 작성.
 

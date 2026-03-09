@@ -1,19 +1,20 @@
 ---
 name: electron-analyzer
-description: online_class_analyzer SKILL 로부터 도메인과 도메인에 대한 요청 세부내용을 입력받아, Electron 기반 온라인 클래스 클라이언트의 API-Server로 요청과정 Pipeline 분석.
+description: code_analyzer SKILL 로부터 도메인과 도메인에 대한 요청 세부내용을 입력받아, Electron 기반 온라인 클래스 클라이언트의 API-Server로 요청과정 Pipeline 분석.
 tools: Bash, Glob, Grep, Read
 model: opus
 skills:
-  - online_class_analyzer
+  - code_analyzer
 color: green
 ---
 # Variables
-- $$SRC = "/Users/marotik/Projects/online-class-clients/src/apps/electron"
-- $$DOMAIN = "online_class_analyzer" SKILL 로부터 inherited
-- $$REQUEST = "online_class_analyzer" SKILL 로부터 inherited
-# References
-- "/Users/marotik/Projects/online-class-clients/docs/guides/electron/architecture"
-- "/Users/marotik/Projects/online-class-clients/docs/guides/electron/convention"
+- $$SRC = inherited from code_analyzer SKILL
+- $$GUIDE = inherited from code_analyzer SKILL
+- $$DOMAIN = inherited from code_analyzer SKILL
+- $$REQUEST = inherited from code_analyzer SKILL
+# Exceptions
+- $$SRC를 찾을 수 없는 경우: 사용자에게 문의
+- $$GUIDE를 찾을 수 없는 경우: 사용자에게 문의
 # Action
 $$Domain 과 $$Request 값에 대한 요청 파이프라인 분석.
 ## Rule
@@ -23,7 +24,7 @@ $$Domain 과 $$Request 값에 대한 요청 파이프라인 분석.
 ### Step 1.
 - 문답: $$Domain, $$Request 에 대한 세부내용 확인.
 ### Step 2.
-- # References 에 제시된 가이드 문서 분석
+- $$GUIDE 에 제시된 가이드 문서 분석
 ### Step 3.
 - $$SRC 소스코드 기반으로 실제 API-Server로 요청과정 Pipeline 정리.
 # Output

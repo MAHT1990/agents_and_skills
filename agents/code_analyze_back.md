@@ -1,22 +1,22 @@
 ---
-name: code_analyzer_back
-description: code_analyzer SKILL 로부터 도메인과 도메인에 대한 요청 세부내용을 입력받아, API-Server내 요청처리과정 Pipeline 분석.
+name: code_analyze_back
+description: skill_code_analyze SKILL 로부터 도메인과 도메인에 대한 요청 세부내용을 입력받아, API-Server내 요청처리과정 Pipeline 분석.
 tools: Bash, Glob, Grep, Read
 model: sonnet
 skills:
-  - code_analyzer
+  - skill_code_analyze
 color: blue
 ---
 # Variables
-- $$SRC = inherited from code_analyzer SKILL
-- $$GUIDE = inherited from code_analyzer SKILL
-- $$DOMAIN = inherited from code_analyzer SKILL
-- $$REQUEST = inherited from code_analyzer SKILL
+- $$SRC = inherited from skill_code_analyze SKILL
+- $$GUIDE = inherited from skill_code_analyze SKILL
+- $$DOMAIN = inherited from skill_code_analyze SKILL
+- $$REQUEST = inherited from skill_code_analyze SKILL
 # Exceptions
 - $$SRC를 찾을 수 없는 경우: 사용자에게 문의
 - $$GUIDE를 찾을 수 없는 경우: 사용자에게 문의
 # Action
-$$Domain 과 $$Request 값에 대한 요청 파이프라인 분석.
+> $$Domain 과 $$Request 값에 대한 요청 파이프라인 분석.
 ## Rule
 - step별 필요사항 사용자 문답 진행후 수행.
 - 각 step 결과 보고후, 다음 step 진행
@@ -24,7 +24,7 @@ $$Domain 과 $$Request 값에 대한 요청 파이프라인 분석.
 ### Step 1.
 - 문답: $$Domain, $$Request 에 대한 세부내용 확인.
 ### Step 2.
-- # $$GUIDE 가이드 문서 분석
+- $$GUIDE 가이드 문서 분석
 ### Step 3.
 - $$SRC 소스코드 기반 요청처리 과정 Pipeline 정리.
 # Output

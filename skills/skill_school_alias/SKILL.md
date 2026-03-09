@@ -1,5 +1,5 @@
 ---
-name: school_alias
+name: skill_school_alias
 description: 학교명에 대한 줄임말 후보 생성 SKILL. 다음 상황에서 반드시 발동한다. case1. "학교명", "줄임말" 포함 Prompt 요청.
 ---
 

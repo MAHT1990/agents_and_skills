@@ -1,11 +1,11 @@
 ---
-name: front-analyzer
-description: code_analyzer SKILL 로부터 도메인과 도메인에 대한 요청 세부내용을 입력받아, vue 기반 웹 클라이언트의 API-Server로 요청과정 Pipeline 분석.
+name: code_analyzer_electron
+description: code_analyzer SKILL 로부터 도메인과 도메인에 대한 요청 세부내용을 입력받아, Electron 기반 온라인 클래스 클라이언트의 API-Server로 요청과정 Pipeline 분석.
 tools: Bash, Glob, Grep, Read
 model: sonnet
 skills:
   - code_analyzer
-color: pink
+color: green
 ---
 # Variables
 - $$SRC = inherited from code_analyzer SKILL

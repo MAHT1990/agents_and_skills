@@ -3,7 +3,7 @@ name: ml_modeler
 description: 전처리된 단일 데이터셋을 받아 문제 유형에 적합한 복수의 ML 모델을 학습시키고, 학습된 모델과 예측 결과를 출력하는 모델링 전문 에이전트.
 model: sonnet
 tools: Bash, Read, Write
-color: yellow
+color: orange
 skills:
   - machine_learner
 ---

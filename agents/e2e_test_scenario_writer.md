@@ -1,9 +1,10 @@
 ---
-name: scenario-writer
+name: e2e_test_scenario_writer
 description: 전달받은 Scenario 목록을 notion QA 데이터베이스 스키마에 맞게 작성.
-model: opus
+model: sonnet
 permissionMode: plan
 tools: Bash, Glob, Grep, Read, Edit, Write
+color: yellow
 skills:
   - e2e_test
 ---
@@ -58,7 +59,7 @@ skills:
 
 # Example
 
-page-analyzer로부터 아래 시나리오가 전달되었다고 가정:
+e2e_test_page_analyzer로부터 아래 시나리오가 전달되었다고 가정:
 
 ```
 [TC-001] 정상 로그인

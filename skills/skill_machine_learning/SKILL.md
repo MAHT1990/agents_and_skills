@@ -1,6 +1,6 @@
 ---
-name: machine_learner
-description: machine learning 관련 에이전트(ml_analyzer, ml_evaluator, ml_modeler, ml_preprocessor)의 지휘자 스킬. ml_analyzer 에이전트를 통해 데이터 분석, ml_preprocessor 에이전트를 통해 데이터 전처리, ml_modeler 에이전트를 통해 모델링, ml_evaluator 에이전트를 통해 평가를 진행. 발동 조건. Case1. 데이터출처를 주고, Machine을 요청할 경우 발동.
+name: skill_machine_learning
+description: machine learning 관련 에이전트(ml_analyzer, ml_evaluator, ml_modeler, ml_preprocessor)의 지휘자 스킬. 발동 조건. Case1. 데이터출처를 주고, Machine을 요청할 경우 발동.
 ---
 # Rules
 - 적절할 에이전트에 반드시 작업을 분배하여 진행하라
@@ -15,7 +15,7 @@ description: machine learning 관련 에이전트(ml_analyzer, ml_evaluator, ml_
 - ml_evaluator
 
 # Variables
-- $$DATA_SOURCE: <HUMAN>학습을 위한 데이터 출처.
+- $$data_source: <HUMAN>학습을 위한 데이터 출처.
 
 # Problem
 > 주어진 데이터를 바탕으로 최적의 머신러닝 모델을 도출해낸다.

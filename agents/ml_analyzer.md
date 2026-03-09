@@ -5,7 +5,7 @@ model: sonnet
 tools: Bash, Read, Write
 color: green
 skills:
-  - machine_learner
+  - skill_machine_learning
 ---
 
 # Variables

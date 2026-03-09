@@ -5,7 +5,7 @@ model: sonnet
 tools: Bash, Glob, Grep, Read, Edit, Write
 color: green
 skills:
-  - e2e_test
+  - skill_e2e_test_scenario
 ---
 # Variables
 - $$URI = 분석 대상 페이지 URI

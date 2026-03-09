@@ -1,5 +1,5 @@
 ---
-name: e2e_test
+name: skill_e2e_test_scenario
 description: E2E 테스트 시나리오 자동 생성하여 Notion에 오케스트레이터 스킬이다. subagent:e2e_test_page_analyzer(페이지 분석 및 시나리오 도출), subagent:e2e_test_scenario_writer(Notion 작성)를 지휘한다. 다음 상황에서 반드시 발동한다. case1. "E2E 테스트" 관련 문자열 포함 문장. Case2. URI목록 + "테스트" 단어가 함께 등장하는 경우.
 ---
 # Role

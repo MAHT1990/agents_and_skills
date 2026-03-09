@@ -6,7 +6,7 @@ permissionMode: plan
 tools: Bash, Glob, Grep, Read, Edit, Write
 color: yellow
 skills:
-  - e2e_test
+  - skill_e2e_test_scenario
 ---
 # Variables
 - $$ScenarioList = 전달받은 테스트 시나리오 목록 (각 시나리오는 TC번호, 제목, 유형, 사전조건 포함)

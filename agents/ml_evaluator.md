@@ -3,7 +3,7 @@ name: ml_evaluator
 description: 복수의 학습된 ML 모델을 통합 평가하여 성능지표 비교, 최적 모델 선정, 최종 평가 리포트를 생성하는 평가/검증 전문 에이전트.
 model: sonnet
 tools: Bash, Read, Write
-color: blue
+color: red
 skills:
   - machine_learner
 ---

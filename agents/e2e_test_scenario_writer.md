@@ -4,6 +4,7 @@ description: 전달받은 Scenario 목록을 notion QA 데이터베이스 스키
 model: sonnet
 permissionMode: plan
 tools: Bash, Glob, Grep, Read, Edit, Write
+color: yellow
 skills:
   - e2e_test
 ---

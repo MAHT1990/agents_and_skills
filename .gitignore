@@ -15,10 +15,16 @@
 # !skills/** - skills 디렉토리 내의 모든 파일과 하위 디렉토리를 관리 대상으로 포함
 # !agents/ - agents 디렉토리를 관리 대상으로 포함
 # !agents/** - agents 디렉토리 내의 모든 파일과 하위 디렉
+# !commands/ - 사용자 지정 명령어 디렉토리
+# !commands/** - commands 사용자 지정 명령어 디렉토리 ex. shoot.md
 !skills/
 !skills/**
 !agents/
 !agents/**
+!commands/
+!commands/**
+!rules/
+!rules/**
 
 # IDE
 .idea/

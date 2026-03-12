@@ -10,7 +10,7 @@ skills:
 
 # Variables
 - $$requirements = plan_requirement_analyzer의 결과 (서비스 개요 + FR/NFR 목록)
-- $$screens = plan_screen_designer의 결과 (화면 설계)
+- $$screens = plan_interface_designer의 결과 (인터페이스 설계)
 - $$depth = 기획 깊이 (light / standard / deep)
 
 # Rules

@@ -2,7 +2,7 @@
 name: test_scenario_integration_analyzer
 description: 모듈 간 연동 지점을 분석하여 통합 테스트 시나리오를 도출하고 부모 Context로 반환한다.
 model: sonnet
-tools: Bash, Glob, Grep, Read
+tools: Bash, Glob, Grep, Read, AskUserQuestion, WebSearch
 color: blue
 skills:
   - skill_test_scenario

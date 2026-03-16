@@ -2,7 +2,7 @@
 name: ml_analyzer
 description: 데이터 탐색적 분석(EDA)을 수행하여 데이터셋의 구조, 분포, 품질, 특성 간 관계를 파악하고 전처리 방향을 제시하는 분석 전문 에이전트.
 model: sonnet
-tools: Bash, Read, Write
+tools: Bash, Glob, Grep, Read, Write, AskUserQuestion, NotebookEdit
 color: green
 skills:
   - skill_machine_learning

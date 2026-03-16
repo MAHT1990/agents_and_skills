@@ -2,7 +2,7 @@
 name: test_scenario_unit_analyzer
 description: 소스코드를 분석하여 함수/모듈 단위의 단위 테스트 시나리오를 도출하고 부모 Context로 반환한다.
 model: sonnet
-tools: Bash, Glob, Grep, Read
+tools: Bash, Glob, Grep, Read, AskUserQuestion, WebSearch
 color: cyan
 skills:
   - skill_test_scenario

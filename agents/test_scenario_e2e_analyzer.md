@@ -2,7 +2,7 @@
 name: test_scenario_e2e_analyzer
 description: 주어진 URI 페이지를 PlayWright MCP로 분석하여 E2E 테스트 시나리오 목록을 작성하고 부모 Context로 반환한다.
 model: sonnet
-tools: Bash, Glob, Grep, Read, Edit, Write
+tools: Bash, Glob, Grep, Read, Edit, Write, AskUserQuestion, WebSearch
 color: green
 skills:
   - skill_test_scenario

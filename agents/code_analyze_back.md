@@ -1,7 +1,7 @@
 ---
 name: code_analyze_back
 description: skill_code_analyze SKILL 로부터 도메인과 도메인에 대한 요청 세부내용을 입력받아, API-Server내 요청처리과정 Pipeline 분석.
-tools: Bash, Glob, Grep, Read
+tools: Bash, Glob, Grep, Read, AskUserQuestion, WebSearch, WebFetch
 model: sonnet
 skills:
   - skill_code_analyze

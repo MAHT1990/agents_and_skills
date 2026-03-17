@@ -15,6 +15,18 @@ description: prisma.schema 등의 Database 정도를 가진 문서를 토대로,
 
 # Action
 ## Rules
+- **skill 발동 즉시, 이 파일의 frontmatter(name, description), Variables, Steps 섹션을 파싱하여 아래 Quick Help 형식으로 Human에게 출력한 후 첫 Step부터 진행한다.**
+  ```
+  {name} — {description 첫 문장}
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ▶ 입력값
+    {Variables 섹션의 각 $$변수를 "$$변수명 : 설명 (필수/선택, 기본: 값)" 형태로 나열}
+
+  ▶ 진행 단계
+    {Steps 섹션의 각 Step을 "Step N. 제목" 형태로 나열}
+
+  💡 각 Step 완료 후 "진행" / "수정" / "중단"으로 응답하세요.
+  ```
 - 각 Step 완료 시, 해당 Step의 결과를 아래 형식으로 요약하여 Human에게 제시한다:
   ```
   --- Step N 결과 요약 ---

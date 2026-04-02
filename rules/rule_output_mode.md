@@ -1,4 +1,6 @@
 ---
+name: rule_output_mode
+description: $$output_mode 변수(console/file/notion) 분기 처리를 정의하는 출력 모드 공통 규칙
 paths:
   - "skills/**/*.md"
   - "skills/**/SKILL.md"
@@ -8,12 +10,14 @@ paths:
 
 $$output_mode 변수를 사용하는 Skill에 공통 적용한다.
 
-## 출력 모드 정의
+## 규칙
+
+### 출력 모드 정의
 - **console** (기본값): 대화창에 결과를 구조화하여 출력한다.
 - **file**: $$output_target 경로에 마크다운 파일로 저장한다.
 - **notion**: $$output_target에 Notion 페이지로 작성한다.
 
-## 공통 규칙
+### 공통 처리
 - $$output_mode 미지정 시 "console"을 기본값으로 적용한다.
 - $$output_mode가 "file" 또는 "notion"인 경우, $$output_target이 필수이다.
   - $$output_target 미제공 시, Human에게 경로/URL을 요청한다.

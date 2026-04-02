@@ -1,4 +1,6 @@
 ---
+name: rule_error_handling_common
+description: Skill 실행 중 공통 에러 상황(변수 미제공, subagent 실패, 리소스 미존재 등)의 처리 규칙
 paths:
   - "skills/**/*.md"
   - "skills/**/SKILL.md"
@@ -7,22 +9,26 @@ paths:
 # 공통 에러 핸들링 규칙
 
 Skill 실행 중 아래 상황이 발생하면 해당 규칙을 적용한다.
-SKILL.md에 별도 Error Handling이 명시된 경우, SKILL.md의 규칙이 우선한다.
 
-## 필수 변수 미제공
+## 규칙
+
+### 필수 변수 미제공
 - Human에게 누락된 변수를 명시하여 재요청한다.
 - Step 0(변수 수집 단계)로 복귀한다.
 
-## subagent 실패
+### subagent 실패
 - 해당 단계를 스킵하고, Human에게 실패 원인과 함께 보고한다.
 - 나머지 단계는 계속 진행한다.
 
-## 병렬 실행 중 일부 실패
+### 병렬 실행 중 일부 실패
 - 성공한 결과만 수집하여 다음 단계로 전달한다.
 - 실패 건은 Human에게 개별 보고한다.
 
-## 파일/리소스 미존재
+### 파일/리소스 미존재
 - 대상 파일 또는 리소스가 존재하지 않는 경우, Human에게 보고하고 경로 재확인을 요청한다.
 
-## 외부 서비스 연동 실패 (Notion, GitHub 등)
+### 외부 서비스 연동 실패 (Notion, GitHub 등)
 - 에러 메시지를 Human에게 전달하고, 재시도 여부를 확인한다.
+
+## 예외
+- SKILL.md에 별도 Error Handling이 명시된 경우, SKILL.md의 규칙이 우선한다.

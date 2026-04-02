@@ -73,15 +73,29 @@ description: 테스트 시나리오 자동 생성 오케스트레이터 스킬. 
 - "수정" 요청 시, 해당 Step 내에서 수정을 완료한 후 재요약하여 확인받는다.
 - "중단" 요청 시, 현재까지의 결과를 Output 형식으로 정리하여 종료한다.
 
-## Step 0. Collect Required Info (Human-in-the-Loop)
-아래 정보를 모두 확보할 때까지 다음 Step 진행 금지.
-- $$scope: 테스트 범위
-- $$output_mode: 출력 방식
+## Step 0. 요구사항 회의 (Human-in-the-Loop)
+
+### 0-1. 변수 수집
+아래 정보를 모두 확보할 때까지 회의 단계로 진행하지 않는다.
+- $$scope: 테스트 범위 (필수)
+- $$output_mode: 출력 방식 (기본: console)
 - scope별 추가 정보:
-  - unit: $$src_path, $$unit_scope (diff/full)
-  - integration: $$src_path
-  - e2e: $$URI_List, $$ACCOUNT.ID, $$ACCOUNT.PW
+  - unit: $$src_path (필수), $$unit_scope (기본: diff)
+  - integration: $$src_path (필수)
+  - e2e: $$URI_List (필수), $$ACCOUNT.ID, $$ACCOUNT.PW
+
+### 0-2. 요구사항 구체화 회의
+수집된 변수를 바탕으로 Human과 회의하여 아래 사항을 구체화한다.
+Human이 최종 승인할 때까지 회의를 반복한다.
+- 테스트 대상의 범위와 목적
 - 테스트 제외 기능 여부
+- 특별히 중점 검증할 영역
+- scope별 추가 확인 사항 (e2e: 로그인 필요 여부, unit: 변경 범위 등)
+
+### 0-3. 최종 승인
+확정된 요구사항을 요구사항 확인서 형식으로 Human에게 제시하고 **최종 승인**을 받는다.
+승인 없이 다음 Step으로 진행하지 않는다.
+"수정" 시, 0-2(회의)로 돌아가 재논의 후 다시 승인을 요청한다.
 
 ## Step 1. Make Plan (Human Confirm Required)
 수집한 정보를 바탕으로 아래 계획을 수립하고 Human에게 확인받는다.

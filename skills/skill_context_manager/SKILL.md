@@ -129,13 +129,27 @@ description: 현재 대화 Context를 분석·관리하여, 작업 Todo Tree 작
 - "수정" 요청 시, 해당 Step 내에서 수정을 완료한 후 재요약하여 확인받는다.
 - "중단" 요청 시, 현재까지의 결과를 Output 형식으로 정리하여 종료한다.
 
-## Step 0. Collect Required Info (Human-in-the-Loop)
+## Step 0. 요구사항 회의 (Human-in-the-Loop)
+
+### 0-1. 변수 수집
 아래 정보를 확보한다. 미제공 시 기본값 적용.
-- $$mode: 실행 모드 (default: "full")
-- $$scope: 분석 범위 (default: "conversation")
-- $$output_mode: 출력 방식 (default: "console")
-- $$output_target: 출력 대상 ($$output_mode에 따라)
-- $$depth: Todo Tree 분석 깊이 (default: "normal")
+- $$mode: 실행 모드 (기본: "full")
+- $$scope: 분석 범위 (기본: "conversation")
+- $$output_mode: 출력 방식 (기본: "console")
+- $$output_target: 출력 대상 (output_mode가 file 또는 notion인 경우 필수)
+- $$depth: Todo Tree 분석 깊이 (기본: "normal")
+
+### 0-2. 요구사항 구체화 회의
+수집된 변수를 바탕으로 Human과 회의하여 아래 사항을 구체화한다.
+Human이 최종 승인할 때까지 회의를 반복한다.
+- Context 정리의 목적 (현황 파악, 작업 전환, 핸드오프 등)
+- 분석 범위에 포함/제외할 항목
+- 특별히 중점적으로 정리할 영역
+
+### 0-3. 최종 승인
+확정된 요구사항을 요구사항 확인서 형식으로 Human에게 제시하고 **최종 승인**을 받는다.
+승인 없이 다음 Step으로 진행하지 않는다.
+"수정" 시, 0-2(회의)로 돌아가 재논의 후 다시 승인을 요청한다.
 
 ## Step 1. Context 수집 & 요약 (context_summarizer)
 context_summarizer에게 위임하여 현재 대화의 Context를 분석한다.

@@ -44,14 +44,32 @@ description: 주어진 소스코드를 분석하여, guide docs를 작성하는 
 - "수정" 요청 시, 해당 Step 내에서 수정을 완료한 후 재요약하여 확인받는다.
 - "중단" 요청 시, 현재까지의 결과를 Output 형식으로 정리하여 종료한다.
 
-## Step1. 변수 확인
-- $$src_path를 확인하고, 사용자에게 입력받으시오.
-- $$guide_path를 확인하고, 사용자에게 입력받으시오.
-- $$scope를 확인하고, 사용자에게 입력받으시오.
-- $$mode를 확인하고, 사용자에게 입력받으시오.
-- $$mode가 pipe-line인 경우,
-  - $$pipe_line_name, $$pipe_line_target을 추가로 입력받으시오.
-## Step2. Mode에 따른 분기
+## Step 0. 요구사항 회의 (Human-in-the-Loop)
+
+### 0-1. 변수 수집
+아래 정보를 모두 확보할 때까지 회의 단계로 진행하지 않는다.
+- $$src_path: 소스 코드 경로 (필수)
+- $$guide_path: 가이드 문서 경로 (기본: "src_path/docs")
+- $$scope: 분석 범위 — FRONT / BACK (필수)
+- $$mode: 작성 모드 — guide / pipe-line (기본: guide)
+- $$mode가 pipe-line인 경우:
+  - $$pipe_line_name: 파이프라인 이름 (필수, kebab-case)
+  - $$pipe_line_target: 분석 대상 프로세스 설명 (필수)
+
+### 0-2. 요구사항 구체화 회의
+수집된 변수를 바탕으로 Human과 회의하여 아래 사항을 구체화한다.
+Human이 최종 승인할 때까지 회의를 반복한다.
+- 문서 작성의 목적과 대상 독자
+- 소스코드 분석 범위와 깊이
+- (guide 모드) 문서에 포함할 주요 섹션
+- (pipe-line 모드) 분석할 파이프라인의 시작/끝 지점
+
+### 0-3. 최종 승인
+확정된 요구사항을 요구사항 확인서 형식으로 Human에게 제시하고 **최종 승인**을 받는다.
+승인 없이 다음 Step으로 진행하지 않는다.
+"수정" 시, 0-2(회의)로 돌아가 재논의 후 다시 승인을 요청한다.
+
+## Step1. Mode에 따른 분기
 ### guide 모드
 - Step3-guide로 이동
 ### pipe-line 모드

@@ -74,15 +74,34 @@ $$sample_root/
 ---
 # Steps
 
-## Step 0. Collect Required Info
-아래 정보를 확보한다:
-- $$sample_root, $$schema_path, $$convention_path, $$tech_stack, $$mock_count
+## Step 0. 요구사항 회의 (Human-in-the-Loop)
 
-### 0-1. 기획서 확인
+### 0-1. 변수 수집
+아래 정보를 모두 확보할 때까지 회의 단계로 진행하지 않는다.
+- $$sample_root: sample 프로젝트 루트 경로 (필수)
+- $$schema_path: DB schema 경로 (선택)
+- $$convention_path: 프로젝트 컨벤션 참조 경로 (선택)
+- $$tech_stack: 화면 기술 스택 (기본: "Vue 3 CDN")
+- $$mock_count: 테이블당 mock 데이터 건수 (Step 진행 중 확인)
+
+### 0-2. 기획서 확인
 $$sample_root/docs/plans/ 디렉토리를 확인한다:
 - 기획서 존재 → 파싱하여 다음 Step으로
 - 기획서 미존재 → skill_plan 자동 호출하여 기획서 생성
   - skill_plan의 $$output_mode = "file", $$output_target = "$$sample_root/docs/plans/"
+
+### 0-3. 요구사항 구체화 회의
+수집된 변수와 기획서 내용을 바탕으로 Human과 회의하여 아래 사항을 구체화한다.
+Human이 최종 승인할 때까지 회의를 반복한다.
+- sample 프로젝트의 목적과 기대하는 결과물
+- 화면 구성 범위 및 우선순위
+- mock 데이터의 양과 수준
+- 기술 스택 관련 선호 사항
+
+### 0-4. 최종 승인
+확정된 요구사항을 요구사항 확인서 형식으로 Human에게 제시하고 **최종 승인**을 받는다.
+승인 없이 다음 Step으로 진행하지 않는다.
+"수정" 시, 0-3(회의)로 돌아가 재논의 후 다시 승인을 요청한다.
 
 ## Step 1. Make Plan (Human Confirm Required)
 수집한 정보를 바탕으로 아래 계획을 수립하고 Human에게 확인받는다.

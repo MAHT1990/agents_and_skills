@@ -116,15 +116,17 @@ description: planning 산출물을 기반으로 프로젝트를 구축하는 빌
 - "수정" 요청 시, 해당 Step 내에서 수정을 완료한 후 재요약하여 확인받는다.
 - "중단" 요청 시, 현재까지의 결과를 Output 형식으로 정리하여 종료한다.
 
-## Step 0. Collect Required Info (Human-in-the-Loop)
-아래 정보를 모두 확보할 때까지 다음 Step 진행 금지.
-- $$planning_path: planning 산출물 디렉토리 경로
-- $$output_path: 프로젝트 생성 경로
-- $$exclude: 제외할 단계 (없으면 전체 진행)
-- $$pipeline_order: 병렬 그룹 실행 순서 (기본값: "infra → db,server,client")
-- $$dry_run: 계획만 출력 여부 (기본값: false)
+## Step 0. 요구사항 회의 (Human-in-the-Loop)
 
-### 0-1. Planning 산출물 파싱
+### 0-1. 변수 수집
+아래 정보를 모두 확보할 때까지 회의 단계로 진행하지 않는다.
+- $$planning_path: planning 산출물 디렉토리 경로 (필수)
+- $$output_path: 프로젝트 생성 경로 (필수)
+- $$exclude: 제외할 단계 (기본: 없음)
+- $$pipeline_order: 병렬 그룹 실행 순서 (기본: "infra → db,server,client")
+- $$dry_run: 계획만 출력 여부 (기본: false)
+
+### 0-2. Planning 산출물 파싱
 $$planning_path에서 아래 파일들을 읽어 핵심 정보를 추출한다:
 - `01_requirements.md` → 기능/비기능 요구사항 목록
 - `02_user_classification.md` → 사용자 유형 (subagent 전달용 컨텍스트)
@@ -133,6 +135,19 @@ $$planning_path에서 아래 파일들을 읽어 핵심 정보를 추출한다:
 - `05_tech_spec.md` → 기술 스택, 아키텍처, 패키지 목록, 인프라 구성
 
 파싱 실패 시 Human에게 누락 파일을 보고하고 진행 여부를 확인한다.
+
+### 0-3. 요구사항 구체화 회의
+수집된 변수와 파싱 결과를 바탕으로 Human과 회의하여 아래 사항을 구체화한다.
+Human이 최종 승인할 때까지 회의를 반복한다.
+- 빌드 목적과 기대하는 프로젝트 구조
+- 기획 산출물 대비 빌드 범위 조정 사항
+- 기술 스택 관련 추가 제약 조건
+- 파이프라인 순서 및 제외할 단계 최종 확인
+
+### 0-4. 최종 승인
+확정된 요구사항을 요구사항 확인서 형식으로 Human에게 제시하고 **최종 승인**을 받는다.
+승인 없이 다음 Step으로 진행하지 않는다.
+"수정" 시, 0-3(회의)로 돌아가 재논의 후 다시 승인을 요청한다.
 
 ## Step 1. Make Plan (Human Confirm Required)
 파싱된 정보를 바탕으로 아래 계획을 수립하고 Human에게 확인받는다.

@@ -179,3 +179,8 @@ Human에게 E2E 검증 여부를 확인한다.
   - Step 4. 검증 결과 (일관성 체크, 누락 여부)
   - Step 5. E2E 검증 결과 (실행 여부, 통과/실패)
   - Step 6. 피드백 루프 결과 (피드백 횟수, 재실행 단계, 최종 승인 여부)
+
+# Next Skills
+| 후속 Skill | 조건 | 입력 매핑 |
+|---|---|---|
+| skill_test_scenario | E2E 검증 필요 시 | index.html 경로 → $$URI_List |

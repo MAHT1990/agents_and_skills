@@ -157,3 +157,8 @@ Human이 최종 승인할 때까지 회의를 반복한다.
 - 수정된 파일: {수정 파일 목록}
 - 최종 승인 여부: {승인/미승인}
 ```
+
+# Next Skills
+| 후속 Skill | 조건 | 입력 매핑 |
+|---|---|---|
+| skill_notion_writer | 가이드 문서를 Notion에 게시 시 | guide 문서 경로 → $$source |

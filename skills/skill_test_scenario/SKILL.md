@@ -150,3 +150,8 @@ $$output_target = { 출력 대상 정보 - file path 또는 Notion URL 등 }
   - Step3. 검증 결과 (누락/오류 여부)
   - Step4. 작성 결과 (출력 방식, 출력 위치, 시나리오 총 수)
   - Step5. 보완 사항 (수정 여부, 최종 시나리오 수)
+
+# Next Skills
+| 후속 Skill | 조건 | 입력 매핑 |
+|---|---|---|
+| skill_build | 테스트에서 발견된 이슈 수정 시 | 시나리오 결과 → $$planning_path |

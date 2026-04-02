@@ -314,3 +314,8 @@ $$output_mode에 따라 아이디어 브리프를 출력한다.
   - Step 7. 아이디어 브리프 생성 결과
   - Step 8. 출력 결과 (출력 방식, 위치)
   - Step 9. 피드백 반영 및 skill_plan 연계 여부
+
+# Next Skills
+| 후속 Skill | 조건 | 입력 매핑 |
+|---|---|---|
+| skill_plan | 아이디어 브리프 완성 시 | 아이디어 브리프 → $$idea |

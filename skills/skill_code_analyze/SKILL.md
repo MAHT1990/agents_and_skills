@@ -122,3 +122,9 @@ subagent 반환 결과에 대해 아래 항목을 자체 검증한다:
   - Step 3. 검증 체크리스트 결과
   - Step 4. 최종 분석 결과
   - Step 5. 피드백 루프 결과 (피드백 횟수, 재실행 Scope, 최종 승인 여부)
+
+# Next Skills
+| 후속 Skill | 조건 | 입력 매핑 |
+|---|---|---|
+| skill_test_scenario | 테스트 시나리오 보완 시 | 분석 대상 → $$target |
+| skill_guide_doc | 분석 결과 문서화 시 | 분석 대상 → $$source_path |

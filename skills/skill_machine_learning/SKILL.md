@@ -89,3 +89,9 @@ Human이 최종 승인할 때까지 회의를 반복한다.
 
 # Output
 - `ipynb` 파일
+
+# Next Skills
+| 후속 Skill | 조건 | 입력 매핑 |
+|---|---|---|
+| skill_guide_doc | ML 결과 문서화 시 | ipynb 경로 → $$source_path |
+| skill_notion_writer | Notion 게시 시 | ipynb 경로 → $$source |

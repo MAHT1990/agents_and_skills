@@ -222,3 +222,9 @@ $$output_mode에 따라 최종 기획 산출물을 출력한다.
   - Step 7. 검증 결과 (누락/불일치 여부)
   - Step 8. 출력 결과 (출력 방식, 위치)
   - Step 9. 피드백 루프 결과 (피드백 횟수, 재실행 단계, 최종 승인 여부)
+
+# Next Skills
+| 후속 Skill | 조건 | 입력 매핑 |
+|---|---|---|
+| skill_build | 기획 산출물 완성 시 | docs/plans/ → $$planning_path |
+| skill_sampler | 샘플 프로젝트 필요 시 | docs/plans/ → $$plan_path |

@@ -369,3 +369,9 @@ $$pipeline_order를 파싱하여 순차/병렬 실행 계획을 수립하고 실
   - Step 5. 빌드 실행 테스트 결과 (빌드 성공/실패, 경고 수, 수정 횟수, 스모크 테스트 결과)
   - Step 6. 실행 가이드 생성 결과 (GUIDE.md 생성 여부, 포함 섹션 수)
   - Step 7. 피드백 루프 결과 (피드백 횟수, 재실행 단계, 최종 승인 여부)
+
+# Next Skills
+| 후속 Skill | 조건 | 입력 매핑 |
+|---|---|---|
+| skill_test_scenario | 테스트 시나리오 필요 시 | 프로젝트 경로 → $$target |
+| skill_guide_doc | 문서화 필요 시 | 프로젝트 경로 → $$source_path |

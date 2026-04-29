@@ -194,6 +194,7 @@ $$notion_mode 값에 따라 Notion 기록 세션을 초기화한다.
    - 평가 스코어카드 (관점별 ●/◐/○)
    - 발견된 오개념
    - AHA 포인트 (사용자가 새로 깨달은 것)
+   - 시각 자료: rule_visualization_guide에 따라 다이어그램 포함 권장 (Notion 기록은 mermaid 우선)
 3. Human에게 질의: "이번 {라운드명} 내용을 Notion에 기록할까요? (예 / 아니오 / 편집 후 기록)"
 4. 응답 처리:
    - **예**: notion-update-page로 $$notion_session_page에 블록 append
@@ -362,6 +363,12 @@ Checkpoint Protocol을 적용한다. 라운드명: "Round N (약점 재검증)" 
 ## 9. 토론 히스토리 요약
 - 총 라운드 수:
 - 핵심 질문과 답변 요약:
+
+## 10. 시각 자료 (Visualization)
+rule_visualization_guide에 따라 출력 모드별 다이어그램을 포함한다.
+- $$output_mode=console: ASCII 다이어그램 (개념 관계 트리, 이해도 바 등)
+- $$output_mode=file/notion: mermaid 다이어그램 (flowchart/mindmap/sequenceDiagram/pie 등)
+- 한 노트당 다양한 형식을 교차 활용 (개념 관계 + 라운드별 이해도 변화 + 약점 분포 등)
 ```
 
 ## Step 7-5. 최종 학습 요약 노트 — Notion 기록 체크포인트

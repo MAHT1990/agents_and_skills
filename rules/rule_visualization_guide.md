@@ -32,7 +32,8 @@ paths:
   - 트리 구조 (`├─`, `└─`, `│  `)
   - 스코어 바 (`●●●○○`, `[████░░]`)
   - 매트릭스/표 (관점 × 이해도 등)
-- 예: 관점별 이해도 바, 개념 관계 트리, 라운드 흐름 화살표, 구조 박스
+  - 와이어프레임 + 외부 라벨링 (박스 내부=식별자, 박스 외부=`◀──` 화살표로 경로·역할 주석 부착)
+- 예: 관점별 이해도 바, 개념 관계 트리, 라운드 흐름 화살표, 구조 박스, 컴포넌트/모듈 와이어프레임
 
 ### file / notion 출력 시
 - **mermaid 다이어그램 적극 사용** (` ```mermaid ... ``` `)
@@ -49,6 +50,33 @@ paths:
   | `pie` | 분포, 비율 |
 - Notion은 mermaid 코드블록을 자동 렌더링한다.
 - file 모드에서는 mermaid 우선, 환경에 따라 ASCII 보조 가능.
+- 와이어프레임 시각화는 `flowchart`로 대체하고, 노드 라벨에 식별자와 경로·역할을 함께 기재한다.
+
+### 와이어프레임 + 외부 라벨링 패턴
+컴포넌트·모듈·API 등 식별자가 있는 구성 요소를 시각화할 때 사용한다.
+
+- **박스 내부**: 식별자만 기재 (컴포넌트명, 함수명, 엔드포인트 경로 등)
+- **박스 외부**: `◀──` 화살표로 `[경로]` + 역할 주석 부착
+- 중첩 구성 요소는 들여쓰기로 표현하고, 각 요소마다 외부 라벨을 붙일 수 있다.
+
+console (ASCII) 예시:
+```
+┌─────────────┐ ◀── [components/Header.vue]
+│ Header      │      역할: 상단 네비게이션, useAuth() 의존
+│  ─ Logo     │
+│  ─ NavMenu  │ ◀── [components/NavMenu.vue]
+└─────────────┘      역할: 메뉴 항목 렌더링
+```
+
+file / notion (mermaid) 대체:
+```mermaid
+flowchart TD
+  Header["Header<br/>components/Header.vue<br/>상단 네비, useAuth 의존"]
+  Logo["Logo"]
+  NavMenu["NavMenu<br/>components/NavMenu.vue<br/>메뉴 항목 렌더링"]
+  Header --> Logo
+  Header --> NavMenu
+```
 
 ### 공통 원칙
 - 다이어그램은 텍스트 설명을 **대체하지 않고 보강**한다.

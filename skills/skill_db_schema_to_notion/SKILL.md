@@ -1,6 +1,6 @@
 ---
 name: skill_db_schema_to_notion
-description: prisma.schema 등의 Database 정도를 가진 문서를 토대로, 구조화된 notion page를 생성한다. 
+description: prisma.schema 등의 Database 정도를 가진 문서를 토대로, 구조화된 notion page를 생성한다. 다음 상황에서 반드시 발동한다. case1. prisma.schema 등 DB 스키마 문서 → Notion 페이지 변환 요청. case2. DataBase 구조의 Notion 페이지 생성·갱신 요청.
 ---
 
 # Problem

@@ -1,6 +1,6 @@
 ---
 name: skill_prompt_manager
-description: prompt 관리 요청을 받아, 요청된 prompt의 구조와 내용을 분석하여, prompt 관리에 필요한 세부사항을 도출하는 SKILL.
+description: prompt 관리 요청을 받아, 요청된 prompt의 구조와 내용을 분석하여, prompt 관리에 필요한 세부사항을 도출하는 SKILL. 다음 상황에서 반드시 발동한다. case1. "prompt 관리", "skill 추가", "agent 추가", "rule 추가" 관련 요청. case2. SKILL/AGENT/RULE의 CREATE/UPDATE/DELETE 작업 요청.
 ---
 # Goal
 > prompt 관리 요청이 들어오면, 요청된 prompt의 이름, 설명, 사용할 Agents 목록과 관리 모드를 분석하여, prompt 관리를 수행할 것.

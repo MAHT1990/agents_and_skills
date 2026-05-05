@@ -3,9 +3,9 @@ name: skill_code_analyze
 description: 도메인과 도메인에 대한 요청 세부내용, 분석범위를 입력받아, 담당 subagent를 통해 주어진 소스코드 기반 요청 파이프라인을 분석해주는 SKILL. -발동조건1. 특정 리소스에 대한 요청 분석을 요청받은 경우.
 ---
 # Agents
-- code_analyzer_front
-- code_analyzer_electron
-- code_analyzer_back
+- code_analyze_front
+- code_analyze_electron
+- code_analyze_back
 # Variable
 - $$SRC_FRONT: user input
 - $$SRC_BACK: user input

@@ -13,6 +13,7 @@
   },
   "permissions": {
     "allow": [
+      "Read",
       "Bash(pwd)",
       "Bash(whoami)",
       "Bash(hostname)",

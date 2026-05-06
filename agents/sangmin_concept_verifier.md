@@ -1,7 +1,7 @@
 ---
 name: sangmin_concept_verifier
 description: 학습 주제의 핵심 개념을 소크라테스식 질문으로 파고들어, 사용자가 정말 이해했는지 검증하는 도전 질문 또는 응답 평가를 부모 Context로 반환한다.
-model: sonnet
+model: opus
 tools: Bash, Read, WebSearch, WebFetch
 color: blue
 skills:

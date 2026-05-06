@@ -1,7 +1,7 @@
 ---
 name: sangmin_counterexample
 description: 학습 주제에 대해 반례·엣지케이스·예외 상황을 제시하여, 사용자의 이해가 표면적인지 깊이 있는지 검증하는 도전 질문 또는 응답 평가를 부모 Context로 반환한다.
-model: sonnet
+model: opus
 tools: Bash, Read, WebSearch, WebFetch
 color: red
 skills:

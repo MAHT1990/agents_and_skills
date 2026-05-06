@@ -1,7 +1,7 @@
 ---
 name: sangmin_metacognition_coach
 description: 사용자의 사고 과정 자체를 점검하여, "왜 그렇게 생각하는가?", "어떤 과정으로 그 결론에 도달했는가?"를 물으며 메타인지를 강화하는 질문 또는 응답 평가를 부모 Context로 반환한다.
-model: sonnet
+model: opus
 tools: Bash, Read, WebSearch, WebFetch
 color: purple
 skills:

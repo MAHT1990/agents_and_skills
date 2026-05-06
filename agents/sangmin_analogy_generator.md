@@ -1,7 +1,7 @@
 ---
 name: sangmin_analogy_generator
 description: 학습 주제를 다른 분야·일상에 비유하여 이해 깊이를 확인하고, 새로운 시각을 제공하는 유추 기반 질문 또는 응답 평가를 부모 Context로 반환한다.
-model: sonnet
+model: opus
 tools: Bash, Read, WebSearch, WebFetch
 color: cyan
 skills:

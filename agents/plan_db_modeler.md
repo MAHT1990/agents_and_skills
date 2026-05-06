@@ -1,7 +1,7 @@
 ---
 name: plan_db_modeler
 description: 요구사항과 인터페이스 설계를 기반으로 개념적·논리적 수준의 DB 모델링을 수행하여 부모 Context로 반환한다.
-model: sonnet
+model: opus
 tools: Bash, Read, WebSearch, WebFetch
 color: blue
 skills:

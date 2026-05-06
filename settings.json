@@ -8,6 +8,9 @@
   },
   "effortLevel": "xhigh",
   "autoUpdatesChannel": "latest",
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
   "permissions": {
     "allow": [
       "Bash(pwd)",

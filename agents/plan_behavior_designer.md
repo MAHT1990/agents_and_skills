@@ -1,7 +1,7 @@
 ---
 name: plan_behavior_designer
 description: 각 사용자 유형별 핵심 행동 시나리오와 Journey Map을 설계하여 부모 Context로 반환한다.
-model: sonnet
+model: opus
 tools: Bash, Read, WebSearch, WebFetch
 color: blue
 skills:

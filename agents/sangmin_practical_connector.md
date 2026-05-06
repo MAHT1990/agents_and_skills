@@ -1,7 +1,7 @@
 ---
 name: sangmin_practical_connector
 description: 학습 주제가 실제 프로젝트·실무에서 어떻게 활용되는지 연결하여, 이론과 실무 사이의 간극을 검증하는 질문 또는 응답 평가를 부모 Context로 반환한다.
-model: sonnet
+model: opus
 tools: Bash, Read, WebSearch, WebFetch
 color: green
 skills:

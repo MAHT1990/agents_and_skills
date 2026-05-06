@@ -1,7 +1,7 @@
 ---
 name: plan_competitor_researcher
 description: 경쟁/유사 서비스를 조사하여 벤치마크 분석 결과를 부모 Context로 반환한다.
-model: sonnet
+model: opus
 tools: Bash, Read, WebSearch, WebFetch
 color: blue
 skills:

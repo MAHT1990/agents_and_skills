@@ -1,7 +1,7 @@
 ---
 name: plan_tech_researcher
 description: 구현에 필요한 기술 스택, 아키텍처, 외부 API 등을 조사하여 부모 Context로 반환한다.
-model: sonnet
+model: opus
 tools: Bash, Read, WebSearch, WebFetch
 color: blue
 skills:

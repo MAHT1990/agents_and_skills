@@ -1,7 +1,7 @@
 ---
 name: sangmin_foundation_checker
 description: 학습 주제의 선행 지식과 기반 개념이 탄탄한지 점검하여, 빈틈이 있는 기초를 발견하고 보완을 유도하는 질문 또는 응답 평가를 부모 Context로 반환한다.
-model: sonnet
+model: opus
 tools: Bash, Read, WebSearch, WebFetch
 color: yellow
 skills:

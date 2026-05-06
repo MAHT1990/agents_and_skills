@@ -1,0 +1,43 @@
+{
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "github@claude-plugins-official": true,
+    "playwright@claude-plugins-official": true,
+    "Notion@claude-plugins-official": true
+  },
+  "effortLevel": "xhigh",
+  "autoUpdatesChannel": "latest",
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Read",
+      "Bash(pwd)",
+      "Bash(whoami)",
+      "Bash(hostname)",
+      "Bash(date)",
+      "Bash(uname:*)",
+      "Bash(uptime)",
+      "Bash(which:*)",
+      "Bash(where:*)",
+      "Bash(type:*)",
+      "Bash(echo:*)",
+      "Bash(printenv)",
+      "Bash(ls:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git branch)",
+      "Bash(git branch -a)",
+      "Bash(git branch --show-current)",
+      "Bash(git show:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(git remote -v)",
+      "Bash(git fetch:*)",
+      "Bash(git ls-files:*)",
+      "Bash(git blame:*)"
+    ]
+  }
+}

@@ -1,7 +1,7 @@
 ---
 name: idea_biz_critic
 description: 비즈니스/수익 관점에서 아이디어의 시장성·수익 모델·지속 가능성을 검증하여, 도전 질문 또는 응답 평가를 부모 Context로 반환한다.
-model: sonnet
+model: opus
 tools: Bash, Read, WebSearch, WebFetch
 color: cyan
 skills:

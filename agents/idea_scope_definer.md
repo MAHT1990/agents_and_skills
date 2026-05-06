@@ -1,7 +1,7 @@
 ---
 name: idea_scope_definer
 description: 아이디어의 핵심 기능 범위를 분석하여 MVP 경계를 잡고, 기능 과잉/부족을 지적하는 도전 질문 또는 응답 평가를 부모 Context로 반환한다.
-model: sonnet
+model: opus
 tools: Bash, Read, WebSearch, WebFetch
 color: orange
 skills:

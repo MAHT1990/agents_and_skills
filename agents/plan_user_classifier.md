@@ -1,7 +1,7 @@
 ---
 name: plan_user_classifier
 description: 서비스 대상 사용자를 유형별로 분류·정의하고 페르소나를 도출하여 부모 Context로 반환한다.
-model: sonnet
+model: opus
 tools: Bash, Read, WebSearch, WebFetch
 color: blue
 skills:

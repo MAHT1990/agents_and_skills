@@ -1,7 +1,7 @@
 ---
 name: plan_interface_designer
 description: 주요 인터페이스(화면, API, 데이터 모델 등) 구성 및 사용자/시스템 흐름을 설계하여 부모 Context로 반환한다.
-model: sonnet
+model: opus
 tools: Bash, Read, WebSearch, WebFetch
 color: blue
 skills:

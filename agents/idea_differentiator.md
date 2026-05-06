@@ -1,7 +1,7 @@
 ---
 name: idea_differentiator
 description: 아이디어의 차별점과 경쟁 우위를 날카롭게 추궁하여, 기존 서비스 대비 차별화 관련 도전 질문 또는 응답 평가를 부모 Context로 반환한다.
-model: sonnet
+model: opus
 tools: Bash, Read, WebSearch, WebFetch
 color: purple
 skills:

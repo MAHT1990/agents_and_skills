@@ -1,7 +1,7 @@
 ---
 name: plan_requirement_analyzer
 description: 러프한 아이디어를 입력받아 기능/비기능 요구사항으로 분해·구체화하고 부모 Context로 반환한다.
-model: sonnet
+model: opus
 tools: Bash, Glob, Grep, Read, WebSearch, WebFetch, AskUserQuestion
 color: blue
 skills:

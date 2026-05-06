@@ -1,7 +1,7 @@
 ---
 name: idea_tech_feasibility
 description: 아이디어의 기술적 실현 가능성을 검증하여, 기술적 허점·구현 난이도·리스크에 대한 도전 질문 또는 응답 평가를 부모 Context로 반환한다.
-model: sonnet
+model: opus
 tools: Bash, Read, WebSearch, WebFetch
 color: yellow
 skills:

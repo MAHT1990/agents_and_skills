@@ -1,7 +1,7 @@
 ---
 name: idea_user_advocate
 description: 타겟 사용자 입장에서 아이디어를 검증하여, "정말 쓸 것인가?"에 대한 도전 질문 또는 응답 평가를 부모 Context로 반환한다.
-model: sonnet
+model: opus
 tools: Bash, Read, WebSearch, WebFetch
 color: green
 skills:

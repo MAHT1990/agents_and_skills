@@ -1,7 +1,7 @@
 ---
 name: idea_value_challenger
 description: 아이디어의 핵심 가치와 문제 정의를 소크라테스식·Devil's Advocate 방식으로 도전하여, 도발적 질문 목록 또는 응답 평가를 부모 Context로 반환한다.
-model: sonnet
+model: opus
 tools: Bash, Read, WebSearch, WebFetch
 color: red
 skills:

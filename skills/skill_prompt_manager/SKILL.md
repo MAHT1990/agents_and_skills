@@ -11,6 +11,21 @@ description: prompt 관리 요청을 받아, 요청된 prompt의 구조와 내�
 - $$AGENTS: 관리할 SKILL에서 사용할 Agents 목록 ($$TYPE이 "SKILL"인 경우)
 - $$MODE: "CREATE", "UPDATE", "DELETE" 중 하나로, 수행할 관리 작업의 유형
 
+# References
+> CREATE/UPDATE 작업 시 $$TYPE에 따라 해당 reference를 Step 1.5에서 로드하여 작성·검증 정책으로 적용한다.
+
+- $$prompt_style     = "./references/prompt_style.md"      (공통, 문체 정책)
+- $$skill_structure  = "./references/skill_structure.md"   ($$TYPE=SKILL)
+- $$agent_structure  = "./references/agent_structure.md"   ($$TYPE=AGENT)
+- $$rule_structure   = "./references/rule_structure.md"    ($$TYPE=RULE)
+
+| $$TYPE | 로드 reference |
+|---|---|
+| SKILL | `$$prompt_style` + `$$skill_structure` |
+| AGENT | `$$prompt_style` + `$$agent_structure` |
+| RULE  | `$$prompt_style` + `$$rule_structure` |
+| ALL   | 모두 |
+
 # Actions
 > prompt 관리 요청이 들어오면, 요청된 prompt의 이름, 설명, 사용할 Agents 목록과 관리 모드를 분석하여, prompt 관리에 필요한 세부사항을 도출할 것.
 ## Rules
@@ -59,6 +74,17 @@ Human이 최종 승인할 때까지 회의를 반복한다.
   - $$TYPE이 "AGENT"인 경우, agents 디렉토리내 {$$NAME}.md 확인.
   - $$TYPE이 "SKILL"인 경우, skills 디렉토리내 {$$NAME}/SKILL.md 확인.
   - $$TYPE이 "RULE"인 경우, rules 디렉토리내 {$$NAME}.md 확인.
+
+### Step 1.5. Reference 로드 (CREATE/UPDATE 모드)
+- `# References` 섹션의 매핑 표에 따라 $$TYPE에 해당하는 reference를 로드한다.
+- 로드한 reference는 Step 2/3의 작성·수정 정책으로 적용한다:
+  - `prompt_style.md` → 섹션별 문장식·개조식 적용
+  - `{type}_structure.md` → 필수/선택 섹션, 골격, 안티패턴
+- reference 파일 미존재 시:
+  - `prompt_style.md` 없음 → Human에게 보고, 기본 정책으로 진행
+  - `{type}_structure.md` 없음 → 해당 reference 스킵, 기존 컨벤션 추론으로 진행
+- DELETE 모드는 본 Step 스킵.
+
 ### Step 2. (UPDATE, DELETE 모드인 경우)
 - $$target_file 이 존재하는 경우, 해당 파일의 내용 분석
 - 파일 구조와 내용을 파악하여, 관리 작업에 필요한 세부사항 도출.
@@ -121,9 +147,12 @@ Human이 최종 승인할 때까지 회의를 반복한다.
 - 생성된 파일이 $$TYPE 구조(frontmatter, 필수 섹션)에 부합하는가
 - SKILL 타입: frontmatter(name, description), Variables, Steps, Error Handling, Output 섹션 존재 여부
 - SKILL 타입: rules에서 커버하는 공통 규칙이 인라인으로 중복 작성되지 않았는가
-- AGENT 타입: frontmatter(name, description), 역할 정의 존재 여부
+- SKILL 타입: `skill_structure.md` 골격(필수/선택 섹션, 안티패턴)을 준수했는가
+- AGENT 타입: frontmatter(name, description, model, tools, color, skills), 역할 정의 존재 여부
+- AGENT 타입: `agent_structure.md` 골격(부모 Context 반환 형식, 최소 권한 tools)을 준수했는가
 - RULE 타입: frontmatter(name, description, paths), 규칙 섹션 존재 여부
-- RULE 타입: 공통 구조(규칙/형식/예외)에 부합하는가
+- RULE 타입: `rule_structure.md` 공통 구조(적용/스킵 컨텍스트, 규칙, 형식, 예외)를 준수했는가
+- 공통: `prompt_style.md` 문체 정책 준수 (섹션별 문장식·개조식 매핑, 종결어미 통일, 안티패턴 회피)
 
 ### UPDATE 모드 검증
 - 변경 전/후 diff를 Human에게 제시

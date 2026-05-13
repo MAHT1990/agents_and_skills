@@ -77,6 +77,12 @@ Bash(./skills/skill_ipc_control/methods/b_watcher_monitor/stop_watcher.cmd:*)
 Monitor(./skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd:*)
 ```
 
+### 메시지 본문에 `%` 포함 시 주의 (cmd batch 함정)
+- 본문 안의 `%`는 cmd batch가 parameter expansion으로 해석함 (큰따옴표 안에서도 발생)
+  - 예: 본문에 `%~N` 포함 시 cmd가 invalid modifier로 처리 → 호출 실패
+- 회피: `%%`로 escape (cmd literal-percent 컨벤션) 또는 영문 단어로 표현 ("percent-tilde-N", "percent-star" 등)
+- `$env:*` 등 `$` prefix(PowerShell 변수)는 cmd가 안 건드림 — 안전
+
 ## 명령
 
 ### start_watcher.cmd

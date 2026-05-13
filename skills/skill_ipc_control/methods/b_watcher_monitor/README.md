@@ -9,17 +9,17 @@ Claude Code의 `Monitor` 도구와 짝지어 사용.
 [B 세션 시작 시점]
    ┌─────────────────────────────────────────────────────┐
    │ LLM: Bash(run_in_background:true,                   │
-   │        command="start_watcher.cmd <ch> <as>")        │
-   │  → 백그라운드 task id 반환                            │
-   │ LLM: Monitor(task_id) 로 stdout 라인 구독             │
+   │        command="start_watcher.cmd <ch> <as>")       │
+   │  → 백그라운드 task id 반환                          │
+   │ LLM: Monitor(task_id) 로 stdout 라인 구독           │
    └─────────────────────────────────────────────────────┘
                           │
                           ▼
    ┌─────────────────────────────────────────────────────┐
-   │ watcher 프로세스 (PowerShell)                         │
+   │ watcher 프로세스 (PowerShell)                       │
    │  Get-Content inbox.log -Wait -Tail 0                │
-   │  새 라인이 추가되면 stdout 으로 흘림                  │
-   │  PID를 .watcher_<as>.pid 에 기록                     │
+   │  새 라인이 추가되면 stdout 으로 흘림                │
+   │  PID를 .watcher_<as>.pid 에 기록                    │
    └─────────────────────────────────────────────────────┘
 
 [A 세션]                                  [디스크]
@@ -111,5 +111,30 @@ stop_watcher.cmd <channel> <as>
 - 백엔드 한계(~2초 지연)가 거슬리면 향후 `.NET FileSystemWatcher` 로 교체 가능
 
 ## 구현 메모
-- `.cmd`는 환경변수 세팅 + PID 충돌 체크 + `.ps1` 호출의 얇은 wrapper
-- 실제 IO·프로세스 로직은 `.ps1` 위임
+
+### 2-layer 구조 (.cmd → .ps1) 설계 근거
+
+```
+┌──────────────────────────────────────────────────┐
+│ Layer 1: .cmd  (얇은 어댑터, ~15줄)              │
+│   외부 인터페이스 정규화                          │
+└──────────────────────────────────────────────────┘
+                  │ powershell -File 위임
+                  ▼
+┌──────────────────────────────────────────────────┐
+│ Layer 2: .ps1  (도메인 로직)                     │
+│   JSON Lines · Get-Content -Wait · PID 관리      │
+└──────────────────────────────────────────────────┘
+```
+
+- **본체가 PowerShell인 이유**: batch는 `Get-Content -Wait` 같은 파일 tail,
+  JSON 직렬화, ISO8601 UTC, GUID, 안전한 PID 관리가 모두 부재 — 흉내내려면
+  수십 줄 + race condition
+- **.cmd로 한 번 더 감싼 이유**: PowerShell 직접 호출은 외부 인터페이스가
+  까다로움. .cmd가 다음을 흡수
+  - 위치 인자 → 환경변수 변환 (quoting 함정 회피)
+  - `-NoProfile -ExecutionPolicy Bypass` 박아두기
+  - `chcp 65001` UTF-8 코드페이지 강제
+  - `exit /b %ERRORLEVEL%` 종료코드 전파
+- **부수 효과**: 진입점이 짧고 안정적 → 자동승인 prefix 매칭 깔끔.
+  호출 환경(Git Bash/cmd/PowerShell/Bash tool)에 무관하게 동일 명령으로 진입

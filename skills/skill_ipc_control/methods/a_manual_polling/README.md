@@ -68,5 +68,29 @@ recv.cmd <channel> <as>
 - 3개 이상 세션 라우팅 — 단일 inbox.log + to 필터로 동작은 하나 D가 더 정상
 
 ## 구현 메모
-- `.cmd`는 인자 받고 환경변수로 PowerShell에 넘기는 얇은 wrapper
-- 실제 JSON 직렬화·파일 IO는 `.ps1` 위임 (cmd escape 회피)
+
+### 2-layer 구조 (.cmd → .ps1) 설계 근거
+
+```
+┌──────────────────────────────────────────────────┐
+│ Layer 1: .cmd  (얇은 어댑터, ~15줄)              │
+│   외부 인터페이스 정규화                          │
+└──────────────────────────────────────────────────┘
+                  │ powershell -File 위임
+                  ▼
+┌──────────────────────────────────────────────────┐
+│ Layer 2: .ps1  (도메인 로직)                     │
+│   JSON Lines · 읽음 추적(.read_<as>) · 파일 IO   │
+└──────────────────────────────────────────────────┘
+```
+
+- **본체가 PowerShell인 이유**: batch는 JSON 직렬화, ISO8601 UTC, GUID,
+  UTF-8 안전 append가 모두 부재 — 흉내내려면 수십 줄 + escape 지옥
+- **.cmd로 한 번 더 감싼 이유**: PowerShell 직접 호출은 외부 인터페이스가
+  까다로움. .cmd가 다음을 흡수
+  - 위치 인자 → 환경변수 변환 (quoting 함정 회피)
+  - `-NoProfile -ExecutionPolicy Bypass` 박아두기
+  - `chcp 65001` UTF-8 코드페이지 강제
+  - `exit /b %ERRORLEVEL%` 종료코드 전파
+- **부수 효과**: 진입점이 짧고 안정적 → 자동승인 prefix 매칭 깔끔.
+  호출 환경(Git Bash/cmd/PowerShell/Bash tool)에 무관하게 동일 명령으로 진입

@@ -55,26 +55,28 @@ Claude Code의 `Monitor` 도구와 짝지어 사용.
 
 **이 형태로만 호출한다.** settings.json `permissions.allow`에 등록된 4개 prefix와 정확히 일치해야 매번 승인 프롬프트 없이 동작한다.
 
+> **왜 `~/.claude/...` 인가**: `~`은 Bash가 `$HOME`으로 expand하여 머신 독립적 (`C:\Users\kitor` ↔ `/home/alice` ↔ `/Users/bob`). Claude Code permission은 **raw 문자열 prefix 매칭**이라 `~`가 expand되기 전 토큰으로 비교되어, 모든 머신에서 동일 prefix가 매칭됨. cwd와도 무관.
+
 | 작업 | 사용 도구 | 정확한 호출 형태 |
 |---|---|---|
-| watcher 가동 | **Monitor** | `Monitor(command="./skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd <ch> <as>", persistent=true)` |
-| 메시지 발신 | **Bash** | `./skills/skill_ipc_control/methods/b_watcher_monitor/send.cmd <ch> <from> <to> "<body>"` |
-| watcher 종료 | **Bash** | `./skills/skill_ipc_control/methods/b_watcher_monitor/stop_watcher.cmd <ch> <as>` |
-| (대안) watcher Bash 호출 | **Bash(run_in_background)** | `./skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd <ch> <as>` |
+| watcher 가동 | **Monitor** | `Monitor(command="~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd <ch> <as>", persistent=true)` |
+| 메시지 발신 | **Bash** | `~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/send.cmd <ch> <from> <to> "<body>"` |
+| watcher 종료 | **Bash** | `~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/stop_watcher.cmd <ch> <as>` |
+| (대안) watcher Bash 호출 | **Bash(run_in_background)** | `~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd <ch> <as>` |
 
 ### 매칭이 깨지는 패턴 (사용 금지)
-- ❌ **PowerShell 도구로 호출** — `PowerShell(& ".\skills\...")` (prefix 미등록)
-- ❌ **절대경로** — `C:\Users\kitor\.claude\skills\...` 또는 `/c/Users/kitor/.claude/skills/...`
-- ❌ **백슬래시 경로** — `.\skills\skill_ipc_control\methods\...`
-- ❌ **다른 cwd 기준 경로** — `cd skills/skill_ipc_control && ./methods/.../send.cmd` (prefix가 `./methods/`로 시작해 매칭 X)
-- ❌ **명령 chain** — `... && echo done` (chain된 명령은 별도 prefix 매칭 필요)
+- ❌ **PowerShell 도구로 호출** — `PowerShell(& "~\.claude\...")` (prefix 미등록)
+- ❌ **머신 dependent 절대경로** — `C:\Users\kitor\...`, `/c/Users/kitor/...`, `/home/alice/...` 등. `~/.claude/...`만 사용
+- ❌ **백슬래시 경로** — `~\.claude\skills\...` 또는 `.\skills\...`
+- ❌ **cwd 의존 상대경로** — `./skills/...`, `skills/...` (prefix가 `~/.claude/...`로 시작해 매칭 X, cwd 다른 세션 호환 X)
+- ❌ **명령 chain** — `... && echo done` 또는 `cd X && ~/.claude/...` (chain된 명령은 별도 prefix 매칭 필요)
 
 ### 등록된 prefix (settings.json 사본)
 ```
-Bash(./skills/skill_ipc_control/methods/b_watcher_monitor/send.cmd:*)
-Bash(./skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd:*)
-Bash(./skills/skill_ipc_control/methods/b_watcher_monitor/stop_watcher.cmd:*)
-Monitor(./skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd:*)
+Bash(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/send.cmd:*)
+Bash(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd:*)
+Bash(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/stop_watcher.cmd:*)
+Monitor(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd:*)
 ```
 
 ### 메시지 본문에 `%` 포함 시 주의 (cmd batch 함정)

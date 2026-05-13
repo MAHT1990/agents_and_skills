@@ -18,11 +18,25 @@ foreach ($r in $readLines) {
     if (-not [string]::IsNullOrWhiteSpace($r)) { [void]$readSet.Add($r.Trim()) }
 }
 
+function Test-IpcToMatch {
+    param([string]$To, [string]$As)
+    if ([string]::IsNullOrEmpty($To)) { return $false }
+    $t = $To.Trim()
+    if ($t -eq $As)    { return $true }
+    if ($t -eq 'all')  { return $true }
+    if ($t.Contains(',')) {
+        foreach ($p in $t.Split(',')) {
+            if ($p.Trim() -eq $As) { return $true }
+        }
+    }
+    return $false
+}
+
 $new = @()
 foreach ($line in (Get-Content -Path $inbox -Encoding UTF8)) {
     if ([string]::IsNullOrWhiteSpace($line)) { continue }
     try { $m = $line | ConvertFrom-Json } catch { continue }
-    if ($m.to -ne $asName) { continue }
+    if (-not (Test-IpcToMatch -To $m.to -As $asName)) { continue }
     if ($readSet.Contains($m.id)) { continue }
     $new += $m
 }

@@ -55,6 +55,27 @@ skill_ipc_control/
 - 자동성: 실행 보조만. 침습적 hook·자동 기동 X
 - 플랫폼: Windows .cmd 진입점, 실제 로직은 PowerShell .ps1 위임
 
+## broadcast / 그룹 라우팅 (to 필드 컨벤션)
+- `to` 약속어
+  - `<single>`  — 1:1 다이렉트 (예: `session_b`)
+  - `all`       — 전원 broadcast (자기 자신 포함, 발신자도 자기 송신분 인입됨)
+  - `<a,b,c>`   — 명시 그룹 (쉼표 구분, 양옆 공백 허용)
+- 수신측 매칭 규칙 (의사코드)
+  ```
+  t = msg.to.strip()
+  if t == self            → match
+  if t == "all"           → match
+  if "," in t             → match if self in [p.strip() for p in t.split(",")]
+  else                    → skip
+  ```
+- 적용
+  - method A: `recv.ps1`이 위 매칭을 `Test-IpcToMatch` 함수로 구현
+  - method B: **stage 3(watcher stdout) → stage 5(LLM 매칭) 사이 전 단계에서 필터 X**
+    - Monitor command = `start_watcher.cmd` 단독 호출만 허용 — 파이프(`|`)·후가공(grep/awk/sed 등) 일체 금지
+    - watcher 스크립트도 모든 라인을 가공 없이 stdout으로 흘림
+    - 매칭은 stage 5(수신측 LLM)에서만 수행 — 위 규칙을 LLM 컨벤션으로 적용
+    - 이유: 투명성(silent drop 방지) / 정책 변경 비용(재기동 회피) / 세션 간 표준화 / `.read_<as>` 일관성 / transport-semantic 책임 분리
+
 # Steps
 
 ## Step 1. method 안내 (선택지 제시)

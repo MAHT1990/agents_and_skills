@@ -22,6 +22,10 @@
 - 모든 메시지는 `channels/<channel>/inbox.log`에 한 줄씩 append (JSON Lines)
 - `.read_<as>` 파일에 처리한 메시지 id 누적 → 중복 처리 방지
 - watcher 없음. recv가 호출될 때만 새 메시지 검사
+- **`to` 매칭은 SKILL.md "broadcast / 그룹 라우팅" 정책을 따름** — `recv.ps1`의 `Test-IpcToMatch` 함수가 다음 3종 매칭 처리
+  - `to == self` (1:1)
+  - `to == "all"` (전원 broadcast)
+  - `to == "a,b,c"` 쉼표 분리 후 self 포함 검사 (명시 그룹)
 
 ## 메시지 라인 포맷
 

@@ -43,6 +43,13 @@ Claude Code의 `Monitor` 도구와 짝지어 사용.
 - LLM이 `Monitor` 도구로 그 백그라운드 task를 구독 → 새 라인이 notification으로 도착
 - watcher PID는 `.watcher_<as>.pid`에 저장 → 명시적 stop으로 종료
 - **읽음 추적은 A와 동일** (.read_<as>) — watcher 재시작 시 누락 방지
+- **`to` 매칭은 SKILL.md "broadcast / 그룹 라우팅" 정책을 따름**
+  - 매칭 layer: **stage 3(watcher stdout) → stage 5(LLM 매칭) 사이 필터 X** — Monitor command는 `start_watcher.cmd` 단독 호출만 허용 (파이프 `|`·후가공 일체 금지). watcher 스크립트도 가공 없이 stdout
+  - 매칭 수행은 stage 5(수신측 LLM)에서만:
+    - `to == self` 매치
+    - `to == "all"` 매치 (자기 송신분 포함)
+    - `to == "a,b,c"` 쉼표 split 후 self 포함 시 매치
+    - 그 외 skip + self 송신분(`from == self`)은 무시
 
 ## 호출 규칙 (자동승인 매칭)
 

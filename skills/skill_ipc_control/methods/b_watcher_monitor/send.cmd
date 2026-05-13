@@ -1,25 +1,18 @@
 @echo off
 chcp 65001 > nul
 REM Usage: send.cmd <channel> <from> <to> <message>
-REM Same behavior as a_manual_polling/send.cmd. Self-contained copy (no cross-method dependency).
+REM cmd batch parameter expansion (%%~N) treats comma/semicolon/equal
+REM as argument delimiters, breaking csv "to" values like
+REM "claude_b,claude_c". To avoid this, all args are forwarded via %%*
+REM to PowerShell; PowerShell's param() parses them safely (preserves
+REM quoted commas).
 
 setlocal EnableExtensions
 
-if "%~4"=="" goto :usage
-
-set "IPC_CHANNEL=%~1"
-set "IPC_FROM=%~2"
-set "IPC_TO=%~3"
-set "IPC_BODY=%~4"
+if "%~1"=="" goto :usage
 
 set "SCRIPT_DIR=%~dp0"
-set "IPC_SKILL_ROOT=%SCRIPT_DIR%..\.."
-set "IPC_CHANNEL_DIR=%IPC_SKILL_ROOT%\channels\%IPC_CHANNEL%"
-set "IPC_INBOX=%IPC_CHANNEL_DIR%\inbox.log"
-
-if not exist "%IPC_CHANNEL_DIR%" mkdir "%IPC_CHANNEL_DIR%"
-
-powershell -NoProfile -ExecutionPolicy Bypass -File "%SCRIPT_DIR%send.ps1"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%SCRIPT_DIR%send.ps1" %*
 set "EXITCODE=%ERRORLEVEL%"
 
 endlocal & exit /b %EXITCODE%

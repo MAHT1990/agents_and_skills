@@ -44,6 +44,32 @@ Claude Code의 `Monitor` 도구와 짝지어 사용.
 - watcher PID는 `.watcher_<as>.pid`에 저장 → 명시적 stop으로 종료
 - **읽음 추적은 A와 동일** (.read_<as>) — watcher 재시작 시 누락 방지
 
+## 호출 규칙 (자동승인 매칭)
+
+**이 형태로만 호출한다.** settings.json `permissions.allow`에 등록된 4개 prefix와 정확히 일치해야 매번 승인 프롬프트 없이 동작한다.
+
+| 작업 | 사용 도구 | 정확한 호출 형태 |
+|---|---|---|
+| watcher 가동 | **Monitor** | `Monitor(command="./skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd <ch> <as>", persistent=true)` |
+| 메시지 발신 | **Bash** | `./skills/skill_ipc_control/methods/b_watcher_monitor/send.cmd <ch> <from> <to> "<body>"` |
+| watcher 종료 | **Bash** | `./skills/skill_ipc_control/methods/b_watcher_monitor/stop_watcher.cmd <ch> <as>` |
+| (대안) watcher Bash 호출 | **Bash(run_in_background)** | `./skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd <ch> <as>` |
+
+### 매칭이 깨지는 패턴 (사용 금지)
+- ❌ **PowerShell 도구로 호출** — `PowerShell(& ".\skills\...")` (prefix 미등록)
+- ❌ **절대경로** — `C:\Users\kitor\.claude\skills\...` 또는 `/c/Users/kitor/.claude/skills/...`
+- ❌ **백슬래시 경로** — `.\skills\skill_ipc_control\methods\...`
+- ❌ **다른 cwd 기준 경로** — `cd skills/skill_ipc_control && ./methods/.../send.cmd` (prefix가 `./methods/`로 시작해 매칭 X)
+- ❌ **명령 chain** — `... && echo done` (chain된 명령은 별도 prefix 매칭 필요)
+
+### 등록된 prefix (settings.json 사본)
+```
+Bash(./skills/skill_ipc_control/methods/b_watcher_monitor/send.cmd:*)
+Bash(./skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd:*)
+Bash(./skills/skill_ipc_control/methods/b_watcher_monitor/stop_watcher.cmd:*)
+Monitor(./skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd:*)
+```
+
 ## 명령
 
 ### start_watcher.cmd

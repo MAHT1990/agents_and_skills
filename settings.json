@@ -37,7 +37,11 @@
       "Bash(git remote -v)",
       "Bash(git fetch:*)",
       "Bash(git ls-files:*)",
-      "Bash(git blame:*)"
+      "Bash(git blame:*)",
+      "Bash(./skills/skill_ipc_control/methods/b_watcher_monitor/send.cmd:*)",
+      "Bash(./skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd:*)",
+      "Bash(./skills/skill_ipc_control/methods/b_watcher_monitor/stop_watcher.cmd:*)",
+      "Monitor(./skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd:*)"
     ]
   }
 }

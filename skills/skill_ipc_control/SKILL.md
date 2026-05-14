@@ -8,6 +8,39 @@ description: 동일 디렉토리에서 동시 가동되는 복수 Claude Code �
 - 5가지 IPC 방식을 method 단위로 격납하여 실험·비교한다
 - MVP는 A(manual polling)·B(watcher + Monitor)만 실구현, 나머지는 학습 자료
 
+# Mandatory Behavior
+
+> 본 SKILL 발동 모든 LLM 강제 적용. 메모리·다른 SKILL 규칙과 충돌 시 본 섹션 우선.
+
+## 1. 송신 시 본문 echo
+- `send.cmd` 호출 직전, 보낼 본문 전문을 console에 인용 박스로 출력
+- 형식: `[송신 to=<to>] <본문 전문 그대로>`
+- 요약·발췌·치환 금지
+- 출력 후 즉시 send.cmd 호출
+
+## 2. 수신 시 본문 echo (자기 매칭에 한해)
+- watcher 인입 메시지에 매칭 규칙 적용:
+  - `to == self`
+  - `to == "all"`
+  - `to == "<a,b,c>"` 쉼표 split 후 self 포함
+- 자기 매칭: `inbox.log` 마지막 라인 read → `[수신 from=<from>] <본문 전문>` 박스로 출력
+- 자기 매칭 아님(to=다른 사람): 출력 X, `skip` 표기도 불필요, 다음 작업 진행
+
+## 3. `.cmd` 호출 prefix 강제
+- `settings.json` `permissions.allow` 등록 prefix와 정확히 일치하는 형태로만 호출
+- 허용:
+  - `~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/send.cmd <args>`
+  - `~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd <args>`
+  - `~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/stop_watcher.cmd <args>`
+  - `Monitor(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd <args>)`
+- 금지:
+  - 절대경로 (`C:/Users/...`, `/c/Users/...`, `/home/...`)
+  - 백슬래시 (`~\.claude\skills\...`)
+  - cwd 상대경로 (`./skills/...`, `skills/...`)
+  - PowerShell 도구로 호출
+  - 명령 chain (`&& ...`, `; ...`, `| ...`)
+- 호출 직전 self-check 1회 필수
+
 # Variables
 - $$method: 사용할 IPC 방식 식별자
   - `a_manual_polling` — 파일 + 사람 트리거

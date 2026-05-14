@@ -35,8 +35,6 @@ description: 모든 git 작업에 대한 매니저 스킬. -발동조건1. git �
 - 위임 파일의 추가 변수가 필요한 경우, 해당 시점에 Human에게 수집한다.
 
 # Error Handling
-- $$mode 가 enum(hierarchical|daily|simple) 외 값인 경우 → Human에게 재요청
-- `modes/{$$mode}.md` 파일 미존재 → Human에게 보고하고 중단
 - 위임 실행 중 발생한 에러는 위임 파일의 Error Handling 또는 공통 rule_error_handling_common 에 따른다
 
 # Output

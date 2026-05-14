@@ -104,7 +104,12 @@
       "Bash(unzip -l:*)",
       "Bash(unzip -v:*)",
       "Bash(unzip -t:*)",
-      "Bash(git config:*)"
+      "Bash(git config:*)",
+      "Bash(grep:*)",
+      "Bash(rg:*)",
+      "Bash(egrep:*)",
+      "Bash(fgrep:*)",
+      "Bash(ag:*)"
     ],
     "deny": [
       "Bash(tail -f:*)",

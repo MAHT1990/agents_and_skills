@@ -17,6 +17,7 @@ description: 동일 디렉토리에서 동시 가동되는 복수 Claude Code �
 - 형식: `[송신 to=<to>] <본문 전문 그대로>`
 - 요약·발췌·치환 금지
 - 출력 후 즉시 send.cmd 호출
+- console 출력 형식 세부는 `$$ref_console_pretty` 참조
 
 ## 2. 수신 시 본문 echo (자기 매칭에 한해)
 - watcher 인입 메시지에 매칭 규칙 적용:
@@ -25,6 +26,7 @@ description: 동일 디렉토리에서 동시 가동되는 복수 Claude Code �
   - `to == "<a,b,c>"` 쉼표 split 후 self 포함
 - 자기 매칭: `inbox.log` 마지막 라인 read → `[수신 from=<from>] <본문 전문>` 박스로 출력
 - 자기 매칭 아님(to=다른 사람): 출력 X, `skip` 표기도 불필요, 다음 작업 진행
+- console 출력 형식 세부는 `$$ref_console_pretty` 참조
 
 ## 3. `.cmd` 호출 prefix 강제
 - `settings.json` `permissions.allow` 등록 prefix와 정확히 일치하는 형태로만 호출
@@ -40,6 +42,10 @@ description: 동일 디렉토리에서 동시 가동되는 복수 Claude Code �
   - PowerShell 도구로 호출
   - 명령 chain (`&& ...`, `; ...`, `| ...`)
 - 호출 직전 self-check 1회 필수
+
+# References
+
+- $$ref_console_pretty = "./references/console_pretty_output.md"
 
 # Variables
 - $$method: 사용할 IPC 방식 식별자

@@ -61,7 +61,12 @@
       "mcp__plugin_playwright_playwright__browser_drop",
       "mcp__plugin_playwright_playwright__browser_select_option",
       "mcp__plugin_playwright_playwright__browser_fill_form",
-      "mcp__plugin_playwright_playwright__browser_handle_dialog"
+      "mcp__plugin_playwright_playwright__browser_handle_dialog",
+      "Bash(cat:*)",
+      "Bash(tail:*)"
+    ],
+    "deny": [
+      "Bash(tail -f:*)"
     ]
   }
 }

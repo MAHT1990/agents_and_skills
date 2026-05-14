@@ -41,7 +41,27 @@
       "Bash(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/send.cmd:*)",
       "Bash(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd:*)",
       "Bash(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/stop_watcher.cmd:*)",
-      "Monitor(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd:*)"
+      "Monitor(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd:*)",
+      "mcp__plugin_playwright_playwright__browser_snapshot",
+      "mcp__plugin_playwright_playwright__browser_take_screenshot",
+      "mcp__plugin_playwright_playwright__browser_console_messages",
+      "mcp__plugin_playwright_playwright__browser_network_request",
+      "mcp__plugin_playwright_playwright__browser_network_requests",
+      "mcp__plugin_playwright_playwright__browser_tabs",
+      "mcp__plugin_playwright_playwright__browser_wait_for",
+      "mcp__plugin_playwright_playwright__browser_resize",
+      "mcp__plugin_playwright_playwright__browser_navigate_back",
+      "mcp__plugin_playwright_playwright__browser_close",
+      "mcp__plugin_playwright_playwright__browser_navigate",
+      "mcp__plugin_playwright_playwright__browser_click",
+      "mcp__plugin_playwright_playwright__browser_type",
+      "mcp__plugin_playwright_playwright__browser_press_key",
+      "mcp__plugin_playwright_playwright__browser_hover",
+      "mcp__plugin_playwright_playwright__browser_drag",
+      "mcp__plugin_playwright_playwright__browser_drop",
+      "mcp__plugin_playwright_playwright__browser_select_option",
+      "mcp__plugin_playwright_playwright__browser_fill_form",
+      "mcp__plugin_playwright_playwright__browser_handle_dialog"
     ]
   }
 }

@@ -132,6 +132,13 @@ skill_ipc_control/
 
 ### b_watcher_monitor
 - `start`:
+  0. **사전 점검 (stale PID 검증)**
+     - `channels/<channel>/.watcher_<as>.pid` 존재 여부 확인
+     - 없음 → 1단계로 진행
+     - 있음 → 파일에서 PID 읽어 `Get-Process -Id <pid> -ErrorAction SilentlyContinue`로 alive 검사
+       - **alive** → 중복 기동 거부, status로 안내 후 종료 (Error Handling 참조)
+       - **stale (프로세스 미존재)** → 사용자에게 PID·channel·as 보고 후 **동의 확인**, 동의 시 PID 파일 삭제 → 1단계로 진행
+     - 자동 삭제 금지 — 사용자 동의 없이는 stale이라도 보존
   1. `Bash(run_in_background: true)`로 `methods/b_watcher_monitor/start_watcher.cmd <channel> <as>` 호출
   2. 반환된 background task id를 `Monitor` 도구로 구독
   3. 이후 새 라인이 도착하면 notification으로 자동 인입
@@ -167,7 +174,13 @@ skill_ipc_control/
 - channels/<channel>/ 미존재 시
   - `send` → 자동 생성 (send.cmd 안에서 처리)
   - `recv` → `NO_INBOX` 보고, 종료
-- `.watcher_<as>.pid` 이미 존재 (B의 start) → status로 안내, 중복 기동 거부
+- `.watcher_<as>.pid` 이미 존재 (B의 start)
+  - **alive (Get-Process 성공)** → 중복 기동 거부, status로 안내 후 종료
+  - **stale (Get-Process 실패, 프로세스 미존재)** → 사용자에게 PID·channel·as 보고, **동의 확인 후** PID 파일 삭제 → start 재시도
+- start_watcher.ps1 last-resort 가드 (LLM 사전 점검을 우회한 경우)
+  - alive 감지 → `WATCHER_ALREADY_RUNNING channel=<c> as=<a> pid=<p>` 출력 후 비정상 종료
+  - stale 감지 → `WATCHER_STALE_PID_REMOVED channel=<c> as=<a> pid=<p>` 출력 후 PID 파일 삭제·진행
+  - PID 파싱 실패 (빈 파일·비정수·잘림) → `WATCHER_STALE_PID_REMOVED channel=<c> as=<a> pid=<unreadable>` 출력 후 PID 파일 삭제·진행 (stale로 간주)
 - PowerShell 실행 실패 (execution policy 등) → ExecutionPolicy Bypass 옵션 안내
 
 # Method Index

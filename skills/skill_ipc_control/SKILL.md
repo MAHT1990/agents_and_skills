@@ -139,9 +139,12 @@ skill_ipc_control/
        - **alive** → 중복 기동 거부, status로 안내 후 종료 (Error Handling 참조)
        - **stale (프로세스 미존재)** → 사용자에게 PID·channel·as 보고 후 **동의 확인**, 동의 시 PID 파일 삭제 → 1단계로 진행
      - 자동 삭제 금지 — 사용자 동의 없이는 stale이라도 보존
-  1. `Bash(run_in_background: true)`로 `methods/b_watcher_monitor/start_watcher.cmd <channel> <as>` 호출
-  2. 반환된 background task id를 `Monitor` 도구로 구독
-  3. 이후 새 라인이 도착하면 notification으로 자동 인입
+  1. `Monitor` 도구로 직접 기동:
+     - 호출: `Monitor(command="~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd <channel> <as>", persistent=true)`
+     - watcher stdout (JSON Lines, 한 줄 = 한 메시지) → 한 notification으로 인입
+     - 세션 lifespan 동안 유지, 종료는 `stop_watcher.cmd`
+     - 중간 필터 금지 (grep/awk/sed/`|`) — `# Mandatory Behavior 3` 및 `## broadcast / 그룹 라우팅` 정책과 일관
+     - 안티패턴: `Bash(run_in_background: true)`로 띄우는 방식 — 완료 시 1회 알림이라 watcher의 무한 tail 특성과 불일치, 채택 금지
 - `send`: `methods/b_watcher_monitor/send.cmd <channel> <from> <to> <message>` 호출
 - `stop`: `methods/b_watcher_monitor/stop_watcher.cmd <channel> <as>` 호출 (PID 파일 기반)
 - `status`: `channels/<channel>/.watcher_<as>.pid` 존재 + tasklist로 alive 확인

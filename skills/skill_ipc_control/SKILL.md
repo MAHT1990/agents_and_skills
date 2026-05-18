@@ -180,10 +180,14 @@ skill_ipc_control/
 - `.watcher_<as>.pid` 이미 존재 (B의 start)
   - **alive (Get-Process 성공)** → 중복 기동 거부, status로 안내 후 종료
   - **stale (Get-Process 실패, 프로세스 미존재)** → 사용자에게 PID·channel·as 보고, **동의 확인 후** PID 파일 삭제 → start 재시도
-- start_watcher.ps1 last-resort 가드 (LLM 사전 점검을 우회한 경우)
+- start_watcher.ps1 last-resort 가드 (LLM 사전 점검을 우회한 경우, .cmd PID 게이팅 제거 후 정상 진입점 가드로 격상)
   - alive 감지 → `WATCHER_ALREADY_RUNNING channel=<c> as=<a> pid=<p>` 출력 후 비정상 종료
   - stale 감지 → `WATCHER_STALE_PID_REMOVED channel=<c> as=<a> pid=<p>` 출력 후 PID 파일 삭제·진행
   - PID 파싱 실패 (빈 파일·비정수·잘림) → `WATCHER_STALE_PID_REMOVED channel=<c> as=<a> pid=<unreadable>` 출력 후 PID 파일 삭제·진행 (stale로 간주)
+- watcher 종료 시 PID 파일 정리 (이중 안전망)
+  - 정상 종료/Monitor TaskStop → `start_watcher.ps1` finally 블록이 PID 파일 정리
+  - 강제 종료(Monitor timeout·세션 종료 등 finally skip) → 다음 기동 시 위 last-resort 가드가 stale 복구 후 진행
+  - 두 경로 모두 동일 채널·동일 as 재기동을 차단하지 않음 (stale 자동 흡수)
 - PowerShell 실행 실패 (execution policy 등) → ExecutionPolicy Bypass 옵션 안내
 
 # Method Index

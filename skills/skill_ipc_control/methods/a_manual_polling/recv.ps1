@@ -1,4 +1,4 @@
-# recv.ps1 — print unread messages for IPC_AS from IPC_INBOX
+﻿# recv.ps1 — print unread messages for IPC_AS from IPC_INBOX
 # Inputs (env): IPC_CHANNEL, IPC_AS, IPC_INBOX, IPC_READ
 
 $ErrorActionPreference = 'Stop'

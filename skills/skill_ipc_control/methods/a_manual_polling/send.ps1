@@ -1,4 +1,4 @@
-# send.ps1 — append a JSON line to inbox.log
+﻿# send.ps1 — append a JSON line to inbox.log
 # Inputs (env): IPC_CHANNEL, IPC_FROM, IPC_TO, IPC_BODY, IPC_INBOX
 #
 # param() 어댑터: cmd batch %~N 함정(쉼표·세미콜론·등호 인자분리) 회피.

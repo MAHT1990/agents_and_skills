@@ -1,4 +1,4 @@
-# stop_watcher.ps1 — terminate watcher by PID file
+﻿# stop_watcher.ps1 — terminate watcher by PID file
 # Inputs (env): IPC_CHANNEL, IPC_AS, IPC_PID_FILE
 
 $ErrorActionPreference = 'Stop'

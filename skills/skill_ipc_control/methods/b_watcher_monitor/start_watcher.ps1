@@ -1,4 +1,4 @@
-# start_watcher.ps1 — tail inbox.log to stdout, record PID
+﻿# start_watcher.ps1 — tail inbox.log to stdout, record PID
 # Inputs (env): IPC_CHANNEL, IPC_AS, IPC_INBOX, IPC_PID_FILE
 
 $ErrorActionPreference = 'Stop'

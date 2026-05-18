@@ -19,10 +19,8 @@ set "IPC_PID_FILE=%IPC_CHANNEL_DIR%\.watcher_%IPC_AS%.pid"
 
 if not exist "%IPC_CHANNEL_DIR%" mkdir "%IPC_CHANNEL_DIR%"
 
-if exist "%IPC_PID_FILE%" (
-  echo ALREADY_RUNNING channel=%IPC_CHANNEL% as=%IPC_AS% pidfile="%IPC_PID_FILE%"
-  endlocal & exit /b 2
-)
+REM PID gating unified into start_watcher.ps1 last-resort guard (alive/stale/unreadable).
+REM Rationale: .cmd-level stale rejection blocks Monitor-restart after forced termination.
 
 if not exist "%IPC_INBOX%" type nul > "%IPC_INBOX%"
 

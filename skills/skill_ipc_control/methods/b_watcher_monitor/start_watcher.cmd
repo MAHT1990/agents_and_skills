@@ -2,7 +2,7 @@
 chcp 65001 > nul
 REM Usage: start_watcher.cmd <channel> <as>
 REM Tails channels/<channel>/inbox.log forever, streaming new lines to stdout.
-REM Intended to be invoked via Bash(run_in_background:true) so LLM can subscribe via Monitor.
+REM Intended to be invoked via Monitor(command=..., persistent=true). See SKILL.md Step 2.
 
 setlocal EnableExtensions
 

@@ -8,10 +8,11 @@ Claude Code의 `Monitor` 도구와 짝지어 사용.
 ```
 [B 세션 시작 시점]
    ┌─────────────────────────────────────────────────────┐
-   │ LLM: Bash(run_in_background:true,                   │
-   │        command="start_watcher.cmd <ch> <as>")       │
-   │  → 백그라운드 task id 반환                          │
-   │ LLM: Monitor(task_id) 로 stdout 라인 구독           │
+   │ LLM: Monitor(                                       │
+   │        command="start_watcher.cmd <ch> <as>",       │
+   │        persistent=true                              │
+   │      )                                              │
+   │  → Monitor가 watcher 기동 + stdout 라인 구독 동시   │
    └─────────────────────────────────────────────────────┘
                           │
                           ▼
@@ -40,7 +41,7 @@ Claude Code의 `Monitor` 도구와 짝지어 사용.
 ## 핵심 메커니즘
 - A와 동일하게 `channels/<channel>/inbox.log`를 JSON Lines로 공유
 - B는 시작 시 watcher 프로세스를 띄움 → 새 라인을 stdout으로 흘림
-- LLM이 `Monitor` 도구로 그 백그라운드 task를 구독 → 새 라인이 notification으로 도착
+- LLM이 `Monitor` 도구로 watcher 스크립트를 직접 기동·구독 → 새 라인이 notification으로 도착
 - watcher PID는 `.watcher_<as>.pid`에 저장 → 명시적 stop으로 종료
 - **읽음 추적은 A와 동일** (.read_<as>) — watcher 재시작 시 누락 방지
 - **`to` 매칭은 SKILL.md "broadcast / 그룹 라우팅" 정책을 따름**
@@ -62,9 +63,9 @@ Claude Code의 `Monitor` 도구와 짝지어 사용.
 | watcher 가동 | **Monitor** | `Monitor(command="~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd <ch> <as>", persistent=true)` |
 | 메시지 발신 | **Bash** | `~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/send.cmd <ch> <from> <to> "<body>"` |
 | watcher 종료 | **Bash** | `~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/stop_watcher.cmd <ch> <as>` |
-| (대안) watcher Bash 호출 | **Bash(run_in_background)** | `~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd <ch> <as>` |
 
 ### 매칭이 깨지는 패턴 (사용 금지)
+- ❌ **`Bash(run_in_background:true)`로 watcher 호출** — watcher는 `Get-Content -Wait`로 무한 실행이라 "완료 시 1회 알림" 모델과 불일치. SKILL.md `# Mandatory Behavior 3` 안티패턴. `Bash(start_watcher.cmd:*)` prefix는 last-resort 가드 호환을 위해 settings.json에 보존되나 LLM이 직접 사용 금지
 - ❌ **PowerShell 도구로 호출** — `PowerShell(& "~\.claude\...")` (prefix 미등록)
 - ❌ **머신 dependent 절대경로** — `C:\Users\kitor\...`, `/c/Users/kitor/...`, `/home/alice/...` 등. `~/.claude/...`만 사용
 - ❌ **백슬래시 경로** — `~\.claude\skills\...` 또는 `.\skills\...`
@@ -114,18 +115,20 @@ stop_watcher.cmd <channel> <as>
 ## 사용 흐름 (B 세션 측)
 
 ```
-[1] watcher 띄우기 (LLM이 Bash run_in_background로)
-    $ start_watcher.cmd ab session_b
-    → task_id 반환
-
-[2] Monitor 구독
+[1] watcher 가동 (Monitor 단일 호출)
+    LLM: Monitor(
+           command="~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd ab session_b",
+           persistent=true
+         )
+    → Monitor가 .cmd 진입 + stdout 구독 동시 수행
+    → 첫 이벤트: WATCHER_START channel=ab as=session_b pid=...
     → 이후 새 라인이 system reminder 형태로 인입
 
-[3] 메시지 보내기 (필요 시)
-    $ send.cmd ab session_b session_a "hello back"
+[2] 메시지 보내기 (필요 시)
+    Bash: ~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/send.cmd ab session_b session_a "hello back"
 
-[4] 종료 시
-    $ stop_watcher.cmd ab session_b
+[3] 종료 시
+    Bash: ~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/stop_watcher.cmd ab session_b
 ```
 
 ## 장단점
@@ -146,10 +149,12 @@ stop_watcher.cmd <channel> <as>
 - watcher가 가장 단순한 형태의 **이벤트 루프** — D·E의 더 본격적 메시지 큐 이해의 발판
 
 ## 주의사항
-- 동일 세션이 같은 채널에 watcher를 두 번 띄우려 하면 거부 (PID 파일 충돌 방지)
-- watcher 프로세스가 비정상 종료되면 `.watcher_<as>.pid`가 남음 → 다음 start 시 `ALREADY_RUNNING`처럼 보임
-  - 회복: `stop_watcher.cmd` 한 번 호출 (stale 정리 후 재시작)
-- 백엔드 한계(~2초 지연)가 거슬리면 향후 `.NET FileSystemWatcher` 로 교체 가능
+- watcher 종료 시 PID 파일 정리는 이중 안전망 패턴:
+  - 정상 종료/Monitor TaskStop → `start_watcher.ps1` finally 블록이 PID 파일 정리
+  - 강제 종료(Monitor timeout·세션 종료 등 finally skip) → 다음 기동 시 `start_watcher.ps1` last-resort 가드(alive/stale/unreadable 3분기)가 stale 자동 복구 후 진행
+  - 두 경로 모두 동일 채널·동일 as 재기동을 차단하지 않음 (stale 자동 흡수)
+- 동일 채널·동일 as로 alive인 watcher가 이미 있는 경우만 `WATCHER_ALREADY_RUNNING`으로 중복 기동 거부
+- 백엔드 한계(~2초 지연)가 거슬리면 향후 `.NET FileSystemWatcher`로 교체 가능
 
 ## 구현 메모
 

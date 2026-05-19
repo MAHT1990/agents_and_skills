@@ -86,6 +86,72 @@ Monitor(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/start_watch
 - 회피: `%%`로 escape (cmd literal-percent 컨벤션) 또는 영문 단어로 표현 ("percent-tilde-N", "percent-star" 등)
 - `$env:*` 등 `$` prefix(PowerShell 변수)는 cmd가 안 건드림 — 안전
 
+## 공유 자원 보호장치 (LLM 필독)
+
+`channels/<channel>/inbox.log`는 다중 writer + 단일 reader 패턴의 공유 자원이다. 두 세션이 거의 동시에 send하면 라인 인터리브 또는 IOException으로 메시지 손상이 발생할 수 있어, 본 method는 차단(send 측)과 가시화(watcher 측) 2층 보호를 둔다.
+
+### 보호 대상 자원과 정책
+
+| 자원 | 동시 접근 패턴 | 보호 정책 |
+|---|---|---|
+| `inbox.log` | 다중 writer + 단일 reader | send 측 FileStream 명시 lock + retry / watcher 측 JSON 검증 + MALFORMED_LINE emit |
+| `.read_<as>` | per-session 단일 writer | 보호 불필요 (writer 단일) |
+| `.watcher_<as>.pid` | per-session 단일 writer | `start_watcher.ps1` last-resort 가드 (SKILL.md `# Error Handling` 참조) |
+
+### 차단 (send 측, `send.ps1`)
+
+```
+session_a ─▶ [Open Append+Write, Share=Read] ─▶ Write bytes ─▶ Dispose
+                            │
+                            │ OS lock 활성
+                            ├─ 다른 writer 핸들  → IOException (거부)
+                            └─ 다른 reader 핸들  → 허용 (watcher tail 정상)
+
+session_b ─▶ [Open ... 시도] ─▶ IOException
+              └─▶ 20ms sleep ─▶ retry ─▶ ... ─▶ a Dispose 후 성공
+                          (최대 50회 ≈ 1초, 초과 시 throw)
+```
+
+- `[System.IO.File]::Open(path, Append, Write, FileShare.Read)` 명시 lock으로 다른 writer 차단
+- `FileShare.Read`라 watcher의 `Get-Content -Wait` (read 핸들)은 영향 없음
+- share violation IOException 시 20ms × 50회 retry, 그래도 실패하면 throw
+- 인코딩: Byte Order Mark 없는 UTF-8 / 줄바꿈: CRLF 리터럴 (인코딩·줄바꿈 일관성)
+
+### 가시화 (watcher 측, `start_watcher.ps1`)
+
+```
+inbox.log 라인 인입
+        │
+        ▼
+JSON 검증 (ConvertFrom-Json -ErrorAction Stop)
+        │
+        ├─ OK   → 원본 라인 그대로 emit ─▶ Stage 5 LLM 정상 매칭 흐름
+        │
+        └─ 실패 → 줄바꿈 \n 치환 ─▶ MALFORMED_LINE channel=... as=... raw=... emit
+                                              │
+                                              ▼
+                                        Stage 5 LLM 시그널 인식
+                                        (아래 컨벤션 참조)
+```
+
+손상 자체는 차단(send 측 lock)으로 거의 막히지만, 외부 수동 편집·디스크 손상·인코딩 충돌 등은 못 막는다. 가시화는 silent drop 대신 explicit signal로 손상을 즉시 인지하기 위함.
+
+### MALFORMED_LINE LLM 처리 컨벤션
+
+watcher stdout 인입 라인이 `MALFORMED_LINE channel=... as=... raw=...` 형태이면 LLM은 아래 규칙을 강제 적용한다.
+
+| 항목 | 동작 |
+|---|---|
+| 자기 매칭 | 시도하지 않음 (정상 메시지로 오인 금지, broadcast 매칭 흐름 진입 X) |
+| 사용자 보고 | 즉시 보고 — raw 원본 그대로 + "송신 측 보호장치 점검 필요" 안내 |
+| `.read_<as>` 기록 | 하지 않음 (정상 메시지가 아니므로) |
+| 다음 작업 | 보고 후 진행 |
+
+발생이 빈번하면 의심 순서:
+1. send.ps1 FileStream lock 우회 (cmd가 아닌 경로로 직접 append)
+2. 외부 수동 편집
+3. 파일 인코딩 충돌 (Byte Order Mark 혼재 등)
+
 ## 명령
 
 ### start_watcher.cmd

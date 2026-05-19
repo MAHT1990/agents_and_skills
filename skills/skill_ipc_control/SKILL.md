@@ -195,7 +195,7 @@ skill_ipc_control/
 | method | 상태 | 한 줄 설명 |
 |---|---|---|
 | a_manual_polling | MVP | 파일 + 사람 트리거, 가장 단순한 IPC 기초 |
-| b_watcher_monitor | MVP | 파일 + 백그라운드 watcher → push에 근접 |
+| b_watcher_monitor | MVP | 파일 + 백그라운드 watcher + 공유자원 보호장치 → push에 근접 |
 | c_hook_autoread | 학습 자료 | settings.json hook으로 매 턴 자동 inbox 주입 (침습적) |
 | d_external_queue | 학습 자료 | SQLite/Redis 큐로 구조화·다중 세션 라우팅 |
 | e_mcp_server | 학습 자료 | 커스텀 MCP 서버로 도구 추상화 |

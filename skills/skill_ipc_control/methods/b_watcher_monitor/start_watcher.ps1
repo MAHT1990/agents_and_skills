@@ -41,7 +41,17 @@ Write-Host ("WATCHER_START channel={0} as={1} pid={2} inbox={3}" -f $channel, $a
 try {
     Get-Content -Path $inbox -Wait -Tail 0 -Encoding UTF8 | ForEach-Object {
         if (-not [string]::IsNullOrWhiteSpace($_)) {
-            Write-Host $_
+            # JSON 검증으로 손상 라인 가시화
+            # - 정상 JSON → 기존처럼 그대로 emit
+            # - 깨진 라인 → MALFORMED_LINE 시그널 라인으로 변환 emit
+            # - raw 안의 줄바꿈은 \n 리터럴로 치환해 stdout 라인 단위 처리 유지
+            try {
+                $null = $_ | ConvertFrom-Json -ErrorAction Stop
+                Write-Host $_
+            } catch {
+                $rawEscaped = $_ -replace "`r`n", '\n' -replace "`n", '\n' -replace "`r", '\n'
+                Write-Host ("MALFORMED_LINE channel={0} as={1} raw={2}" -f $channel, $asName, $rawEscaped)
+            }
         }
     }
 } finally {

@@ -1,10 +1,10 @@
 @echo off
-setlocal
+setlocal enabledelayedexpansion
 
 set "SCRIPT_DIR=%~dp0"
 set "PID_FILE=%SCRIPT_DIR%.monitor.pid"
 
-REM ── 사전 점검 1: Node 설치 여부 ─────────────────────
+REM Guard 1: Node installation check
 where node >NUL 2>&1
 if errorlevel 1 (
     echo NODE_NOT_FOUND
@@ -12,19 +12,19 @@ if errorlevel 1 (
     exit /b 1
 )
 
-REM ── 사전 점검 2: node_modules 존재 여부 ─────────────
+REM Guard 2: node_modules presence check
 if not exist "%SCRIPT_DIR%node_modules" (
     echo DEPS_MISSING node_modules not found.
     echo Run: cd /d "%SCRIPT_DIR%" ^&^& npm install
     exit /b 1
 )
 
-REM ── 사전 점검 3: stale PID 처리 ──────────────────────
+REM Guard 3: stale PID handling (delayed expansion required inside block)
 if exist "%PID_FILE%" (
     set /p EXISTING_PID=<"%PID_FILE%"
-    tasklist /FI "PID eq %EXISTING_PID%" 2>NUL | find "%EXISTING_PID%" >NUL
+    tasklist /FI "PID eq !EXISTING_PID!" 2>NUL | findstr /C:"!EXISTING_PID!" >NUL
     if not errorlevel 1 (
-        echo MONITOR_ALREADY_RUNNING pid=%EXISTING_PID%
+        echo MONITOR_ALREADY_RUNNING pid=!EXISTING_PID!
         exit /b 1
     )
     del "%PID_FILE%"

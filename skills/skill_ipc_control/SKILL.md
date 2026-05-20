@@ -68,18 +68,27 @@ description: 동일 디렉토리에서 동시 가동되는 복수 Claude Code �
 ```
 skill_ipc_control/
  ├─ SKILL.md
- ├─ methods/                 ← 정적 카탈로그 (구현·문서)
+ ├─ methods/                 ← IPC 통신 메서드 카탈로그 (의존 0, 셸 스크립트)
  │   ├─ a_manual_polling/
  │   ├─ b_watcher_monitor/
  │   ├─ c_hook_autoread/     (README only)
  │   ├─ d_external_queue/    (README only)
  │   └─ e_mcp_server/        (README only)
+ ├─ tools/                   ← 런타임 데이터 시각화·관리 보조 앱 (외부 의존 허용)
+ │   └─ web_monitor/         ← IPC 모니터링 웹앱 (Node + Vanilla JS, MVP 구현)
+ ├─ docs/plans/              ← 기획 산출물
  └─ channels/                ← 런타임 인스턴스 (gitignore)
      └─ <channel>/
          ├─ inbox.log              (JSON Lines, 모든 메시지 누적)
          ├─ .read_<as>             (처리한 메시지 id 셋)
          └─ .watcher_<as>.pid      (watcher 띄웠을 때만 존재)
 ```
+
+### 디렉토리 컨벤션
+- `methods/` = **IPC 통신 메서드 자체**. 의존 0, OS 셸 스크립트만. 가볍게 portable
+- `tools/` = **런타임을 시각화·관리하는 보조 앱**. Node·Python 등 외부 의존 허용. 사용자 설치 단계 1회 필요
+- `channels/` = **런타임 인스턴스**. gitignore 처리, 빈 디렉토리는 첫 send 시 자동 생성
+- `docs/plans/` = **기획 산출물**. skill 자체 진화 기록 보관
 
 ## 메시지 라인 포맷 (JSON Lines)
 - 한 라인 = 한 메시지
@@ -199,6 +208,14 @@ skill_ipc_control/
 | c_hook_autoread | 학습 자료 | settings.json hook으로 매 턴 자동 inbox 주입 (침습적) |
 | d_external_queue | 학습 자료 | SQLite/Redis 큐로 구조화·다중 세션 라우팅 |
 | e_mcp_server | 학습 자료 | 커스텀 MCP 서버로 도구 추상화 |
+
+# Tool Index
+
+| tool | 상태 | 한 줄 설명 | 진입점 |
+|---|---|---|---|
+| web_monitor | MVP | 채널·메시지·watcher 상태 실시간 웹 시각화 (Express + Vanilla JS, 의존 0 클라이언트) | `tools/web_monitor/monitor_start.cmd` |
+
+tools/ 사용 전 1회: 해당 디렉토리에서 `npm install`. 자세한 실행 안내는 각 도구의 `GUIDE.md` 참조.
 
 # Output
 - 사용자 요청 action별 결과를 stdout 그대로 + 한 줄 요약으로 보고

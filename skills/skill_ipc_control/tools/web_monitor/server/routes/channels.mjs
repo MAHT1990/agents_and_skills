@@ -30,7 +30,7 @@ function scanChannels() {
         try {
           const stat = fs.statSync(inboxPath);
           lastTs = stat.mtime.toISOString();
-          total = Math.floor(stat.size / 120);
+          total = countLines(inboxPath);
         } catch { /* inbox.log 없음 */ }
         return { name, total, lastTs };
       });
@@ -53,6 +53,14 @@ channelsRouter.get('/:name/messages', (req, res) => {
   const messages = readMessages(name, limit) ?? mockMessages(name, limit);
   res.json({ messages });
 });
+
+// ── 라인 카운트: 0x0A 바이트 count ─────────────────
+function countLines(filePath) {
+  const buf = fs.readFileSync(filePath);
+  let n = 0;
+  for (let i = 0; i < buf.length; i++) if (buf[i] === 0x0A) n++;
+  return n;
+}
 
 // ── 파일 읽기: 최근 N줄 ──────────────────────────────
 function readMessages(channelName, limit) {

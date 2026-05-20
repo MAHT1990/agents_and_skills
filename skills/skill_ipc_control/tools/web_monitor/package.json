@@ -1,0 +1,24 @@
+{
+  "name": "ipc-monitor-web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Read-only web monitor for skill_ipc_control runtime",
+  "scripts": {
+    "start": "node server/index.mjs",
+    "dev": "node --watch server/index.mjs"
+  },
+  "dependencies": {
+    "express": "^5.0.0",
+    "dotenv": "^16.4.0",
+    "zod": "^3.23.0",
+    "pino": "^9.0.0",
+    "pino-http": "^10.0.0"
+  },
+  "devDependencies": {
+    "pino-pretty": "^11.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -32,6 +32,12 @@
 # 관리 안함: skill 런타임 디렉토리 (IPC 채널 등)
 skills/*/channels/
 
+# 관리 안함: skill 내부 도구의 런타임 산출물
+skills/**/node_modules/
+skills/**/.env
+skills/**/*.log
+skills/**/*.pid
+
 # IDE
 .idea/
 .vscode/

@@ -8,6 +8,7 @@ description: 주어진 소스코드를 분석하여, guide docs를 작성하는 
 - $$scope: 분석 범위
   - 프론트엔드: "FRONT", "front", "프론트", "프론트엔드"
   - 백엔드: "BACK", "back", "백", "백엔드"
+  - 인프라: "INFRA", "infra", "인프라", "iac"
 - $$mode: 작성 모드
   - guide: "guide", "가이드", "문서" (기본값)
   - pipe-line: "pipe-line", "pipeline", "파이프라인", "분석"
@@ -16,6 +17,7 @@ description: 주어진 소스코드를 분석하여, guide docs를 작성하는 
 # References
 - $$api-server-scaffolding = "./references/api-server-scaffolding.md"
 - $$client-scaffolding = "./references/client-scaffolding.md"
+- $$infra-scaffolding = "./references/infra-scaffolding.md"
 - $$pipe-line-scaffolding = "./references/pipe-line-scaffolding.md"
 
 # Action
@@ -50,7 +52,7 @@ description: 주어진 소스코드를 분석하여, guide docs를 작성하는 
 아래 정보를 모두 확보할 때까지 회의 단계로 진행하지 않는다.
 - $$src_path: 소스 코드 경로 (필수)
 - $$guide_path: 가이드 문서 경로 (기본: "src_path/docs")
-- $$scope: 분석 범위 — FRONT / BACK (필수)
+- $$scope: 분석 범위 — FRONT / BACK / INFRA (필수)
 - $$mode: 작성 모드 — guide / pipe-line (기본: guide)
 - $$mode가 pipe-line인 경우:
   - $$pipe_line_name: 파이프라인 이름 (필수, kebab-case)
@@ -78,7 +80,8 @@ Human이 최종 승인할 때까지 회의를 반복한다.
 ## Step3-guide. Scope에 따른 Guide 작성
 - 프론트엔드일 경우, $$client-scaffolding 을 참고하여 작성하시오.
 - 백엔드일 경우, $$api-server-scaffolding 을 참고하여 작성하시오.
-- 둘 다일 경우, 두 문서를 참고하여 작성하시오.
+- 인프라일 경우, $$infra-scaffolding 을 참고하여 작성하시오.
+- 복수 scope일 경우, 해당 scaffolding 문서들을 함께 참고하여 작성하시오.
 
 ## Step3-pipeline. Pipeline 분석 작성
 - $$pipe-line-scaffolding 을 참고하여 작성하시오.

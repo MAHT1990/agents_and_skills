@@ -1,13 +1,4 @@
 {
-  "enabledPlugins": {
-    "frontend-design@claude-plugins-official": true,
-    "context7@claude-plugins-official": true,
-    "github@claude-plugins-official": true,
-    "playwright@claude-plugins-official": true,
-    "Notion@claude-plugins-official": true
-  },
-  "effortLevel": "xhigh",
-  "autoUpdatesChannel": "latest",
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
@@ -38,10 +29,15 @@
       "Bash(git fetch:*)",
       "Bash(git ls-files:*)",
       "Bash(git blame:*)",
-      "Bash(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/send.cmd:*)",
-      "Bash(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd:*)",
-      "Bash(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/stop_watcher.cmd:*)",
-      "Monitor(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd:*)",
+      "Bash(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/scripts/send.cmd:*)",
+      "Bash(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/scripts/start_watcher.cmd:*)",
+      "Bash(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/scripts/stop_watcher.cmd:*)",
+      "Monitor(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/scripts/start_watcher.cmd:*)",
+      "Bash(~/.claude/skills/skill_ipc_control/methods/f_http_relay/scripts/set_url.cmd:*)",
+      "Bash(~/.claude/skills/skill_ipc_control/methods/f_http_relay/scripts/send.cmd:*)",
+      "Bash(~/.claude/skills/skill_ipc_control/methods/f_http_relay/scripts/start_watcher.cmd:*)",
+      "Bash(~/.claude/skills/skill_ipc_control/methods/f_http_relay/scripts/stop_watcher.cmd:*)",
+      "Monitor(~/.claude/skills/skill_ipc_control/methods/f_http_relay/scripts/start_watcher.cmd:*)",
       "mcp__plugin_playwright_playwright__browser_snapshot",
       "mcp__plugin_playwright_playwright__browser_take_screenshot",
       "mcp__plugin_playwright_playwright__browser_console_messages",
@@ -127,5 +123,14 @@
       "Bash(git config --rename-section:*)",
       "Bash(git config --remove-section:*)"
     ]
-  }
+  },
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "github@claude-plugins-official": true,
+    "playwright@claude-plugins-official": true,
+    "Notion@claude-plugins-official": true
+  },
+  "effortLevel": "medium",
+  "autoUpdatesChannel": "latest"
 }

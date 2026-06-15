@@ -11,7 +11,7 @@ set "IPC_CHANNEL=%~1"
 set "IPC_AS=%~2"
 
 set "SCRIPT_DIR=%~dp0"
-set "IPC_SKILL_ROOT=%SCRIPT_DIR%..\.."
+set "IPC_SKILL_ROOT=%SCRIPT_DIR%..\..\.."
 set "IPC_CHANNEL_DIR=%IPC_SKILL_ROOT%\channels\%IPC_CHANNEL%"
 set "IPC_INBOX=%IPC_CHANNEL_DIR%\inbox.log"
 set "IPC_READ=%IPC_CHANNEL_DIR%\.read_%IPC_AS%"

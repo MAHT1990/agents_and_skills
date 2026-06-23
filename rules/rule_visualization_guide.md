@@ -36,21 +36,24 @@ paths:
 - 예: 관점별 이해도 바, 개념 관계 트리, 라운드 흐름 화살표, 구조 박스, 컴포넌트/모듈 와이어프레임
 
 ### file / notion 출력 시
-- **mermaid 다이어그램 적극 사용** (` ```mermaid ... ``` `)
-- 활용 형식 풀:
+- **ASCII 다이어그램 중심** — file·notion 출력이라도 구조·관계·흐름·트리·토폴로지·와이어프레임은 ASCII 다이어그램으로 작성한다.
+  - ASCII 다이어그램은 반드시 코드블록(` ```text `) 안에 작성한다 — Notion·뷰어의 monospace 정렬을 보존하기 위함.
+  - Notion은 코드블록 ASCII와 mermaid를 모두 자동 렌더링한다.
+- **mermaid는 아래 3종에만 사용한다:**
   | 형식 | 용도 |
   |---|---|
-  | `flowchart` | 구조/관계/의사결정 흐름 |
-  | `sequenceDiagram` | 시간 흐름, 왕복 통신 |
-  | `stateDiagram-v2` | 상태 전이, 라이프사이클 |
-  | `classDiagram` | 구성 요소, 객체 관계 |
-  | `erDiagram` | 데이터/엔티티 관계 |
-  | `mindmap` | 개념 탐색, 약점/강점 분포 |
-  | `gantt` | 타임라인, 일정 |
-  | `pie` | 분포, 비율 |
-- Notion은 mermaid 코드블록을 자동 렌더링한다.
-- file 모드에서는 mermaid 우선, 환경에 따라 ASCII 보조 가능.
-- 와이어프레임 시각화는 `flowchart`로 대체하고, 노드 라벨에 식별자와 경로·역할을 함께 기재한다.
+  | `sequenceDiagram` | 시간 흐름·왕복 통신 (ASCII 표현이 비효율적) |
+  | PREREQUISITES (`flowchart`) | STUDY 템플릿 선행지식 의존 그래프 |
+  | 추천후속학습 (`flowchart`) | STUDY 템플릿 후속학습 의존 그래프 |
+- 위 3종을 제외한 모든 다이어그램은 출력 모드와 무관하게 ASCII로 작성한다.
+- mermaid flowchart(PREREQUISITES·추천후속학습) 작성 시 노드/엣지 문법은 해당 SKILL이 참조하는 flowchart 템플릿($$flowchart_page 등) 지시를 따른다.
+
+### ASCII 다이어그램 작성 위생 (console·file·notion 공통)
+- 박스 내부 텍스트와 화살표 라벨에는 ASCII 문자(영문·숫자·기호)만 사용한다.
+  - 한글(CJK)은 monospace에서 2-cell 폭을 차지해 박스 변·정렬을 깨뜨린다.
+- 한글 설명이 불가피하면 박스/다이어그램 '밖'(하단 캡션 줄)에 배치한다.
+- 화살표 라벨도 ASCII만 사용 — 한글 라벨은 폭을 밀어 정렬을 깬다.
+- 박스가 깨지지 않도록 정렬 보존을 최우선으로 한다.
 
 ### 와이어프레임 + 외부 라벨링 패턴
 컴포넌트·모듈·API 등 식별자가 있는 구성 요소를 시각화할 때 사용한다.
@@ -68,7 +71,7 @@ console (ASCII) 예시:
 └─────────────┘      역할: 메뉴 항목 렌더링
 ```
 
-file / notion (mermaid) 대체:
+file / notion — 와이어프레임도 ASCII 중심 원칙을 따른다(위 console ASCII 예시를 그대로 사용). 박스 내부는 ASCII 식별자만, 한글 역할 주석은 박스 밖에 배치한다. mermaid가 굳이 필요한 경우의 대체 형태:
 ```mermaid
 flowchart TD
   Header["Header<br/>components/Header.vue<br/>상단 네비, useAuth 의존"]

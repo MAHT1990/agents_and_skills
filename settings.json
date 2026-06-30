@@ -130,6 +130,10 @@
     "github@claude-plugins-official": true,
     "playwright@claude-plugins-official": true
   },
-  "effortLevel": "medium",
-  "autoUpdatesChannel": "latest"
+  "effortLevel": "high",
+  "autoUpdatesChannel": "latest",
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+  }
 }

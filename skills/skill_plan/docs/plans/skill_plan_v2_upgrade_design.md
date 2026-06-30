@@ -28,7 +28,7 @@ agent 로스터: **7 → 11**. (신규 4: function_specifier·api_designer·test
 
 - **레지스트리**: 04가 8카테고리 + FR/NFR을 확정해 freeze → 오케스트레이터가 보유하는 단일 원천. 각 agent엔 불변 슬라이스 `$$id_registry`로 전달, 산출에서 신규 ID만 회수해 append. **상위 ID 재번호 금지(참조 전용).**
 - **직렬화**: `req_analyzer(04) → function_specifier(05)`. 05는 frozen FR을 입력으로만 받는다.
-- **FR↔FN = 1:N + 전수 커버리지(불변식)**: 한 FR이 여러 FN으로 전개될 수 있고, **FN 없는 FR은 존재 불가**. 고아 FN도 금지. (사용자 확정 사항)
+- **FR/NFR↔FN = 1:N + FR 전수 커버리지(불변식)**: 한 FR(또는 NFR)이 여러 FN으로 전개될 수 있고, **FN 없는 FR은 존재 불가**. FN은 ≥1 FR 또는 NFR로 소급(고아 FN 금지). NFR은 전수 커버리지 강제 안 함. (사용자 확정)
 - **검증 게이트**(오케스트레이터, 출력 직전): 전수 커버리지·고아·중복·카테고리 정합·추적성 매트릭스 무결성 점검 → 결손 시 해당 agent만 재실행.
 
 ## 4. 파이프라인 (요약)
@@ -48,7 +48,7 @@ agent 로스터: **7 → 11**. (신규 4: function_specifier·api_designer·test
 | 인덱스 파일명 | `plan.md` 아님 → **`INDEX.md`** |
 | agent 로스터/분리 | 채택 (신규 4 + interface 분리) |
 | 골격·ID·추적성 규약 | 채택 (references 2벌) |
-| FR↔FN 식별자 정합 | **예방형**(레지스트리+직렬화+게이트), 대응은 **1:N**, FN 없는 FR 불가 |
+| FR↔FN 식별자 정합 | **예방형**(레지스트리+직렬화+게이트), 대응은 **1:N**, FN 없는 FR 불가. FN은 **FR 또는 NFR**로 소급(NFR 전수 강제 안 함) |
 | depth 잔여 | light/standard에서 11·12는 골격, deep에서 full |
 | 산출 위치 | `$$output_target`에 `INDEX.md`+`NN_*.md` 평면 (버전 폴더 강제 안 함) |
 | v0 호환 | legacy 모드 없이 v2 대체 |

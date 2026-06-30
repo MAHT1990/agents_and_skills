@@ -25,7 +25,7 @@ description: 기획팀 역할을 수행하는 오케스트레이터 스킬. 러�
 | # | Name | 문서 | 역할 | 발번 ID |
 |---|---|---|---|---|
 | 1 | plan_requirement_analyzer | 04 | 요구사항 FR/NFR + 8카테고리·레지스트리 시드 | FR·NFR·카테고리 |
-| 2 | plan_function_specifier | 05 | FR→FN 전개 (1:N, FR 전수 커버리지) | FN |
+| 2 | plan_function_specifier | 05 | FR/NFR→FN 전개 (1:N, FR 전수 커버리지) | FN |
 | 3 | plan_user_classifier | 03 | 사용자 유형·페르소나 (RBAC 권한 조합) | UT·P |
 | 4 | plan_competitor_researcher | 02 | 시장 분석 · Build vs Buy | — |
 | 5 | plan_behavior_designer | 06 | 행동 시나리오 · Journey Map | BS·JM |
@@ -118,7 +118,7 @@ $$idea 요약 · 실행 subagent 목록($$exclude 반영) · 파이프라인 순
 - 답이 FR/NFR에 영향을 주면 04를 패치(필요 시 agent 재실행)해 반영하고, 사용자 **최종 승인**으로 요구사항을 확정한다. (승인 전 다음 Step 진행 금지)
 
 ## Step 3. 기능 정의 (직렬)
-- `plan_function_specifier`(05)에 위임. 전달: 04 결과(frozen FR), $$id_registry 슬라이스(categories·FR), $$depth.
+- `plan_function_specifier`(05)에 위임. 전달: 04 결과(frozen FR/NFR), $$id_registry 슬라이스(categories·FR·NFR), $$depth.
 - 결과: FN(FR 전수 커버리지). `REGISTRY_APPEND`(FN)를 회수해 레지스트리에 추가.
 
 ## Step 4. 사용자 유형 분류 + 시장 조사 (병렬)
@@ -144,7 +144,7 @@ $$idea 요약 · 실행 subagent 목록($$exclude 반영) · 파이프라인 순
 
 ## Step 10. 검증 게이트 (오케스트레이터)
 `plan_id_system.md §7` 체크리스트로 ID 무결성을 점검한다:
-- FR 전수 커버리지(FN 없는 FR 0)·고아 FN 0·FR↔FN 카테고리 일치·FR 재번호 0·고아 참조 0·중복 0·FR↔SC/ENT 커버리지·추적성 매트릭스 행 누락 0.
+- FR 전수 커버리지(FN 없는 FR 0)·고아 FN 0(FR·NFR 둘 다 없는 FN)·(FR 소급분) FR↔FN 카테고리 일치·FR/NFR 재번호 0·고아 참조 0·중복 0·FR↔SC/ENT 커버리지·추적성 매트릭스 행 누락 0.
 - 결손 시 원인 agent만 재실행 후 재검증. (`rules/rule_verification_checklist.md` 병행)
 
 ## Step 11. 합성 (오케스트레이터)

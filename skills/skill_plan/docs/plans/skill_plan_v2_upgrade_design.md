@@ -52,6 +52,7 @@ agent 로스터: **7 → 11**. (신규 4: function_specifier·api_designer·test
 | depth 잔여 | light/standard에서 11·12는 골격, deep에서 full |
 | 산출 위치 | `$$output_target`에 `INDEX.md`+`NN_*.md` 평면 (버전 폴더 강제 안 함) |
 | v0 호환 | legacy 모드 없이 v2 대체 |
+| 요구사항 정의 회의 | **하이브리드 3라운드**(Step 2) — 오케스트레이터 상세 회의(2-1) → agent 정형화(2-2) → 보완 질문 라운드(2-3). requirement_analyzer는 발명자→**정형화기**, `$$requirements_brief` 입력 + `CLARIFY`(확인 질문·가정) 반환 |
 
 ## 6. 구성 파일
 

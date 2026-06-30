@@ -18,6 +18,7 @@ description: 기획팀 역할을 수행하는 오케스트레이터 스킬. 러�
 - $$output_target: 출력 대상 (file path 또는 Notion URL, file·notion 시 필수)
 - $$exclude: 제외할 기획 단계 (agent 번호 또는 이름, default: 없음)
 - $$depth: 기획 깊이 (user input, default: "standard") — light / standard / deep
+- $$requirements_brief: **(내부 상태)** Step 2-1 오케스트레이터 상세 회의에서 사용자와 합의한 요구사항 브리프. Step 2-2에서 requirement_analyzer의 정형화 1차 근거로 전달.
 - $$id_registry: **(내부 상태, 오케스트레이터 보유)** 8공통카테고리 + 발번된 전 ID의 단일 원천. Step 2에서 시드, 이후 각 단계 산출에서 신규 ID를 회수해 append. 하위 agent에는 관련 슬라이스를 **불변 입력**으로 전달.
 
 ## Subagents
@@ -39,9 +40,11 @@ description: 기획팀 역할을 수행하는 오케스트레이터 스킬. 러�
 
 ### Pipeline
 ```
-[사용자 입력: $$idea] ──▶ ① requirement_analyzer (04)
-                              ├─ 8 카테고리 코드셋 확정 ── FREEZE
-                              └─ FR/NFR 발번·배정 ──────── REGISTRY SEED
+[사용자 입력: $$idea] ─▶ [Step 2 요구사항 정의 — 하이브리드 3라운드]
+                         2-1 오케스트레이터 상세 회의 ─(요구사항 브리프)─┐
+                         2-2 ① requirement_analyzer (04) 정형화 ◀────────┘
+                               ├─ 8 카테고리 FREEZE · FR/NFR ─── REGISTRY SEED
+                               └─ 확인 질문·가정 ─▶ 2-3 보완 라운드 ─▶ 확정
                                       │  [직렬화: FN은 frozen FR을 입력으로만]
                                       ▼
                           ② function_specifier (05)  FR→FN(1:N), 모든 FR ≥1 FN
@@ -98,9 +101,21 @@ description: 기획팀 역할을 수행하는 오케스트레이터 스킬. 러�
 ## Step 1. Make Plan (Human Confirm)
 $$idea 요약 · 실행 subagent 목록($$exclude 반영) · 파이프라인 순서·병렬·직렬·레지스트리 흐름 · $$depth 산출 수준 · 출력 방식을 제시하고 확인받는다.
 
-## Step 2. 요구사항 구체화 + 레지스트리 시드
-- `plan_requirement_analyzer`(04)에 위임. 전달: $$idea, $$depth.
-- 결과: FR/NFR + **8 카테고리 코드셋**. 산출의 `REGISTRY_SEED`로 **$$id_registry를 시드**한다.
+## Step 2. 요구사항 정의 (하이브리드 회의) + 레지스트리 시드
+요구사항은 **오케스트레이터 상세 회의 → agent 정형화 → 보완 질문 라운드**의 3-라운드로 확정한다. (요구사항 정의는 자동 생성이 아니라 사용자와의 회의로 도출한다.)
+
+### 2-1. 오케스트레이터 상세 회의 (Human-in-the-Loop)
+이 세션(오케스트레이터)이 사용자와 직접 **세밀한 요구사항 Q&A 회의**를 진행한다. 핵심 기능을 **하나씩** 짚고 범위 경계·우선순위(MoSCoW)·주요 엣지·제약을 구체화한다(Step 0의 방향성 합의보다 기능 단위로 깊게). 사용자가 승인하는 **요구사항 브리프**($$requirements_brief)를 만든다.
+- $$depth 연동: light=핵심 기능 위주 1~2회, standard=주요 기능 라운드, deep=전 기능·엣지·제약 철저히.
+
+### 2-2. agent 정형화
+- `plan_requirement_analyzer`(04)에 위임. 전달: $$idea, **$$requirements_brief**, $$depth.
+- agent는 브리프를 **FR/NFR/8카테고리로 정형화**(발명이 아닌 정형화)하고, 도메인 리서치로 빈틈을 보완하며, **확인 필요 질문·가정**을 함께 반환한다.
+- 산출의 `REGISTRY_SEED`로 **$$id_registry를 시드**한다.
+
+### 2-3. 보완 질문 라운드 & 확정
+- agent가 반환한 **확인 필요 질문·가정**을 사용자에게 제시(AskUserQuestion/대화)하고 답을 받는다.
+- 답이 FR/NFR에 영향을 주면 04를 패치(필요 시 agent 재실행)해 반영하고, 사용자 **최종 승인**으로 요구사항을 확정한다. (승인 전 다음 Step 진행 금지)
 
 ## Step 3. 기능 정의 (직렬)
 - `plan_function_specifier`(05)에 위임. 전달: 04 결과(frozen FR), $$id_registry 슬라이스(categories·FR), $$depth.

@@ -80,6 +80,7 @@ ID 태그 항목을 카테고리/그룹 단위로 묶어 기술. 항목 표제�
 
 - 항목 본문은 agent별 고유 양식(AC·구성요소·컬럼 등)을 따른다.
 - **다른 문서의 ID를 인용할 때는 발번하지 말고 참조만** 한다(`plan_id_system` 레지스트리 규칙).
+  - 참조는 **정의된 의존 DAG 엣지에 한하며**(스파게티 cross-link 금지), 파생물(src/runbook/코드)은 **역참조하지 않는다** — `plan_ssot_integrity` 준수.
 - 다이어그램은 `rules/rule_visualization_guide.md` 준수:
   - 기본 **ASCII 코드블록**(트리·박스·흐름·와이어프레임).
   - mermaid는 `sequenceDiagram`·ERD(`erDiagram`) 등 ASCII가 비효율적인 경우만.
@@ -93,8 +94,8 @@ ID 태그 항목을 카테고리/그룹 단위로 묶어 기술. 항목 표제�
 - `## 문서 메타` (권장, 합성 문서·신규 문서는 필수):
   ```
   ## 문서 메타
-  - 버전 / 생성·갱신 일자
-  - 관련 문서: [`04_requirements`](./04_requirements.md) 등 상호 링크
+  - 버전 / 생성·갱신 일자   ← 리비전 정보는 여기까지만. 본문 changelog·diff 삽입 금지(`plan_ssot_integrity §3`)
+  - 관련 문서: DAG 엣지에 해당하는 문서만 상호 링크 예) [`04_requirements`](./04_requirements.md) (`plan_ssot_integrity §2`)
   - 미해결·후속: 13_followups로 이관할 항목
   ```
 

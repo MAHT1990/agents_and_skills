@@ -11,6 +11,7 @@ description: 기획팀 역할을 수행하는 오케스트레이터 스킬. 러�
 모든 산출물은 아래 2개 reference 규약을 따른다. subagent에게도 이 경로를 전달한다.
 - `references/plan_doc_skeleton.md` — 문서 4단 표준 골격(§0 개요 / §1 한눈에 / §2~ 상세 / 문서메타)
 - `references/plan_id_system.md` — ID 네임스페이스 10종 · 8공통카테고리(FR↔FN 공유) · 레지스트리 운영 · 추적성 매트릭스 · 검증 게이트
+- `references/plan_ssot_integrity.md` — SSOT 무결성(원천성·단방향 참조·계층 준수·in-place 재작성). CREATE/UPDATE 공통.
 
 # Variables
 - $$idea: 사용자의 러프한 아이디어 텍스트 (user input, 필수)
@@ -80,6 +81,7 @@ description: 기획팀 역할을 수행하는 오케스트레이터 스킬. 러�
 - **레지스트리 불변 규칙**: 어떤 subagent도 상위 ID를 재번호·재배정하지 않는다(참조 전용). 자기 네임스페이스의 신규 ID만 발번하고 `REGISTRY_APPEND` 블록으로 반환한다.
 - **직렬 의존**: `requirement_analyzer(04) → function_specifier(05)`는 데이터 의존으로 직렬화. 05는 frozen FR을 입력으로만 받는다.
 - $$depth 값은 모든 subagent에 전달되어 상세 수준을 결정한다. `light/standard`에서 11·12는 골격(skeleton)으로, `deep`에서 full로 산출한다.
+- **SSOT 무결성**: 기획서는 SSOT. 파생물(src/runbook/코드) 역참조 금지, 정의된 DAG 엣지 밖 cross-link 금지, 변경이력 본문 삽입 금지(문서메타 버전·일자만). `references/plan_ssot_integrity.md` 준수.
 
 # Error Handling
 - 공통 규칙은 `rules/rule_error_handling_common.md`를 따른다.

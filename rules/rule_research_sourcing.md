@@ -1,10 +1,6 @@
 ---
 name: rule_research_sourcing
 description: 조사가 필요한 작업은 학습 지식만으로 답하지 말고, WebSearch(외부) + Notion(내 지식베이스) 이중 조사 후 출처와 함께 답한다.
-paths:
-  - "skills/**/*.md"
-  - "skills/**/SKILL.md"
-  - "agents/**/*.md"
 ---
 
 # 자료조사·출처 규칙

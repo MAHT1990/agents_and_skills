@@ -44,6 +44,7 @@ description: 프로그래밍·컴퓨터과학 학습을 위해 사용자와 소�
 - $$notion_target_page: 기존 Notion 페이지 URL/이름 (조건부 필수, $$notion_mode=append 일 때)
 - $$notion_global_rule_page: Notion 템플릿 전역규칙 페이지명 (optional, default: "TEMPLATEs>")
 - $$notion_template_page: Notion 템플릿 페이지명 (optional, default: "TEMPLATEs> STUDY")
+- $$notion_study_root: 학습 노트 트리 루트 페이지명/URL — Step 0.7 사전 학습 자료 조회 대상 (optional, default: "STUDY>")
 
 ## Subagents
 | # | Name | 관점 | 역할 | 우선순위 |
@@ -118,6 +119,7 @@ description: 프로그래밍·컴퓨터과학 학습을 위해 사용자와 소�
 - 사용자가 토론 중단 요청 → 즉시 현재 상태로 학습 요약 노트 생성
 - Notion MCP 호출 실패 (Step 1.5 / 체크포인트) → 기록 대상 마크다운 블록을 console에 출력하고 "Notion 기록 실패. 위 내용을 직접 복사하여 붙여넣어 주세요." 안내. 토론 흐름은 중단하지 않고 다음 Step 진행.
 - $$notion_mode=new인데 $$notion_parent_page 미제공, 또는 append인데 $$notion_target_page 미제공 → Human에게 재요청, Step 0로 복귀
+- Step 0.7 사전 학습 자료 조회 실패 (notion-search/fetch 실패) → "사전 조회 실패, 기존 자료 확인 없이 진행" 안내 후 Step 1 진행. 토론 흐름 미중단.
 
 ---
 # Action
@@ -165,6 +167,7 @@ description: 프로그래밍·컴퓨터과학 학습을 위해 사용자와 소�
 - $$notion_target_page: 기존 Notion 페이지 URL/이름 (notion_mode=append 시 필수)
 - $$notion_global_rule_page: 전역규칙 페이지명 (기본: "TEMPLATEs>")
 - $$notion_template_page: 템플릿 페이지명 (기본: "TEMPLATEs> STUDY")
+- $$notion_study_root: 학습 노트 트리 루트 (기본: "STUDY>")
 
 ### 0-2. 요구사항 구체화 회의
 수집된 변수를 바탕으로 Human과 회의하여 아래 사항을 구체화한다.
@@ -178,6 +181,30 @@ Human이 최종 승인할 때까지 회의를 반복한다.
 확정된 요구사항을 요구사항 확인서 형식으로 Human에게 제시하고 **최종 승인**을 받는다.
 승인 없이 다음 Step으로 진행하지 않는다.
 "수정" 시, 0-2(회의)로 돌아가 재논의 후 다시 승인을 요청한다.
+
+## Step 0.7. 사전 학습 자료 조회 (Pre-study Notion Lookup)
+> 토론 시작 전, 사용자 Notion 학습 트리에 $$topic 관련 기존 정리가 있는지 확인한다. $$notion_mode 값과 무관하게 항상 실행한다 (검색은 read-only).
+
+### 0.7-1. 학습 트리 검색
+- notion-search로 $$notion_study_root 하위에서 $$topic 관련 페이지 검색
+- 검색 키워드: $$topic + 핵심 동의어·약어 (예: "GC" ↔ "가비지 컬렉션")
+- 결과를 $$notion_study_root 트리 하위로 한정 (트리 밖 결과 제외)
+
+### 0.7-2. 발견 시 처리
+- notion-fetch로 상위 후보 페이지의 핵심 추출
+- 관련 노트 목록을 Human에게 제시: 제목 / URL / 최종 수정일 / 핵심 요약 1~2줄
+- **append 연계 제안**: "기존 노트에 이번 토론 기록을 이어 쓸까요? (예 / 아니오)"
+  - 예 → $$notion_mode=append, $$notion_target_page=선택 노트로 설정 (Step 1.5로 인계)
+  - 아니오 → 기존 $$notion_mode 유지
+- 복수 노트 발견 시, 사용자가 연계 대상 1개를 선택하도록 안내
+
+### 0.7-3. 미발견 시 처리
+- "관련 기존 정리를 찾지 못했습니다. 새 주제로 시작합니다." 안내
+- 다음 Step 진행
+
+### 0.7-4. 실패 시 처리
+- Notion MCP 호출 실패 → "사전 조회 실패. 기존 학습 자료 확인 없이 진행합니다." 안내
+- 토론 흐름은 중단하지 않고 Step 1 진행
 
 ## Step 1. Make Plan (Human Confirm Required)
 수집한 정보를 바탕으로 아래 계획을 수립하고 Human에게 확인받는다.
@@ -417,6 +444,7 @@ $$output_mode에 따라 학습 요약 노트를 출력한다.
 # Output
 - Step별 전체 작업 요약
   - Step 0. 수집 정보 요약 (topic, level, output_mode, max_rounds, notion_mode)
+  - Step 0.7. 사전 학습 자료 조회 결과 (발견 노트 수, append 연계 여부, 미발견/실패 시 사유)
   - Step 1. 수립된 계획 요약
   - Step 1.5. Notion 세션 초기화 결과 (notion_mode, session_page ID/URL, 템플릿 학습 여부)
   - Step 2~3. Round 1 토론 결과 (질문 수, 응답 평가, 관점별 이해도)

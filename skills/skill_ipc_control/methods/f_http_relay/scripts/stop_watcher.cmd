@@ -1,7 +1,7 @@
 @echo off
 chcp 65001 > nul
 REM Usage: stop_watcher.cmd <channel> <as>
-REM Reads .watcher_<as>.pid and terminates the process.
+REM Reads .watcher_<as>.pid and terminates the process. Cursor file is kept.
 
 setlocal EnableExtensions
 
@@ -11,7 +11,7 @@ set "IPC_CHANNEL=%~1"
 set "IPC_AS=%~2"
 
 set "SCRIPT_DIR=%~dp0"
-set "IPC_SKILL_ROOT=%SCRIPT_DIR%..\.."
+set "IPC_SKILL_ROOT=%SCRIPT_DIR%..\..\.."
 set "IPC_CHANNEL_DIR=%IPC_SKILL_ROOT%\channels\%IPC_CHANNEL%"
 set "IPC_PID_FILE=%IPC_CHANNEL_DIR%\.watcher_%IPC_AS%.pid"
 

@@ -1,13 +1,4 @@
 {
-  "enabledPlugins": {
-    "frontend-design@claude-plugins-official": true,
-    "context7@claude-plugins-official": true,
-    "github@claude-plugins-official": true,
-    "playwright@claude-plugins-official": true,
-    "Notion@claude-plugins-official": true
-  },
-  "effortLevel": "xhigh",
-  "autoUpdatesChannel": "latest",
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
@@ -38,10 +29,15 @@
       "Bash(git fetch:*)",
       "Bash(git ls-files:*)",
       "Bash(git blame:*)",
-      "Bash(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/send.cmd:*)",
-      "Bash(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd:*)",
-      "Bash(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/stop_watcher.cmd:*)",
-      "Monitor(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd:*)",
+      "Bash(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/scripts/send.cmd:*)",
+      "Bash(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/scripts/start_watcher.cmd:*)",
+      "Bash(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/scripts/stop_watcher.cmd:*)",
+      "Monitor(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/scripts/start_watcher.cmd:*)",
+      "Bash(~/.claude/skills/skill_ipc_control/methods/f_http_relay/scripts/set_url.cmd:*)",
+      "Bash(~/.claude/skills/skill_ipc_control/methods/f_http_relay/scripts/send.cmd:*)",
+      "Bash(~/.claude/skills/skill_ipc_control/methods/f_http_relay/scripts/start_watcher.cmd:*)",
+      "Bash(~/.claude/skills/skill_ipc_control/methods/f_http_relay/scripts/stop_watcher.cmd:*)",
+      "Monitor(~/.claude/skills/skill_ipc_control/methods/f_http_relay/scripts/start_watcher.cmd:*)",
       "mcp__plugin_playwright_playwright__browser_snapshot",
       "mcp__plugin_playwright_playwright__browser_take_screenshot",
       "mcp__plugin_playwright_playwright__browser_console_messages",
@@ -109,7 +105,18 @@
       "Bash(rg:*)",
       "Bash(egrep:*)",
       "Bash(fgrep:*)",
-      "Bash(ag:*)"
+      "Bash(ag:*)",
+      "WebSearch",
+      "WebFetch",
+      "mcp__claude_ai_Notion__notion-fetch",
+      "mcp__claude_ai_Notion__notion-search",
+      "mcp__claude_ai_Notion__notion-query-data-sources",
+      "mcp__claude_ai_Notion__notion-query-database-view",
+      "mcp__claude_ai_Notion__notion-query-meeting-notes",
+      "mcp__claude_ai_Notion__notion-get-comments",
+      "mcp__claude_ai_Notion__notion-get-users",
+      "mcp__claude_ai_Notion__notion-get-teams",
+      "mcp__claude_ai_Notion__notion-get-async-task"
     ],
     "deny": [
       "Bash(tail -f:*)",
@@ -127,5 +134,17 @@
       "Bash(git config --rename-section:*)",
       "Bash(git config --remove-section:*)"
     ]
-  }
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+  },
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "github@claude-plugins-official": true,
+    "playwright@claude-plugins-official": true
+  },
+  "effortLevel": "high",
+  "autoUpdatesChannel": "latest"
 }

@@ -1,12 +1,12 @@
 ---
 name: skill_ipc_control
-description: 동일 디렉토리에서 동시 가동되는 복수 Claude Code 세션 간 IPC(프로세스간 통신)를 5가지 방식(A~E)으로 운용·실험하는 SKILL. methods/ 카탈로그 + channels/ 런타임 인스턴스 구조. MVP는 A(수동 폴링)·B(watcher + Monitor) 실구현, C/D/E는 학습 자료 README. 발동조건. case1. "ipc"·"세션간 통신"·"session 통신" 포함 요청. case2. "다중 세션 협업"·"세션 메시지" 관련 요청. case3. "/ipc" 슬래시 명령 또는 직접 호출.
+description: 복수 Claude Code 세션 간 IPC(프로세스간 통신)를 6가지 방식(A~F)으로 운용·실험하는 SKILL. A~E는 동일 디렉토리 세션 간, F는 HTTP 중계로 디바이스간 확장. methods/ 카탈로그 + channels/ 런타임 인스턴스 구조. MVP는 A(수동 폴링)·B(watcher + Monitor)·F(HTTP relay) 실구현, C/D/E는 학습 자료 README. 발동조건. case1. "ipc"·"세션간 통신"·"session 통신" 포함 요청. case2. "다중 세션 협업"·"세션 메시지"·"디바이스간 통신" 관련 요청. case3. "/ipc" 슬래시 명령 또는 직접 호출.
 ---
 
 # Goal
-- 둘 이상의 Claude Code 세션 사이에서 메시지를 주고받는다
-- 5가지 IPC 방식을 method 단위로 격납하여 실험·비교한다
-- MVP는 A(manual polling)·B(watcher + Monitor)만 실구현, 나머지는 학습 자료
+- 둘 이상의 Claude Code 세션 사이에서 메시지를 주고받는다 (F는 디바이스간까지 확장)
+- 6가지 IPC 방식을 method 단위로 격납하여 실험·비교한다
+- MVP는 A(manual polling)·B(watcher + Monitor)·F(HTTP relay) 실구현, 나머지는 학습 자료
 
 # Mandatory Behavior
 
@@ -31,10 +31,15 @@ description: 동일 디렉토리에서 동시 가동되는 복수 Claude Code �
 ## 3. `.cmd` 호출 prefix 강제
 - `settings.json` `permissions.allow` 등록 prefix와 정확히 일치하는 형태로만 호출
 - 허용:
-  - `~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/send.cmd <args>`
-  - `~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd <args>`
-  - `~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/stop_watcher.cmd <args>`
-  - `Monitor(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd <args>)`
+  - `~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/scripts/send.cmd <args>`
+  - `~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/scripts/start_watcher.cmd <args>`
+  - `~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/scripts/stop_watcher.cmd <args>`
+  - `Monitor(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/scripts/start_watcher.cmd <args>)`
+  - `~/.claude/skills/skill_ipc_control/methods/f_http_relay/scripts/set_url.cmd <args>`
+  - `~/.claude/skills/skill_ipc_control/methods/f_http_relay/scripts/send.cmd <args>`
+  - `~/.claude/skills/skill_ipc_control/methods/f_http_relay/scripts/start_watcher.cmd <args>`
+  - `~/.claude/skills/skill_ipc_control/methods/f_http_relay/scripts/stop_watcher.cmd <args>`
+  - `Monitor(~/.claude/skills/skill_ipc_control/methods/f_http_relay/scripts/start_watcher.cmd <args>)`
 - 금지:
   - 절대경로 (`C:/Users/...`, `/c/Users/...`, `/home/...`)
   - 백슬래시 (`~\.claude\skills\...`)
@@ -54,8 +59,10 @@ description: 동일 디렉토리에서 동시 가동되는 복수 Claude Code �
   - `c_hook_autoread` — settings.json hook (구현 예정)
   - `d_external_queue` — SQLite/Redis 큐 (구현 예정)
   - `e_mcp_server` — 커스텀 MCP 서버 (구현 예정)
+  - `f_http_relay` — HTTP 중계 서버 경유 디바이스간 (봉투 + id 커서)
 - $$action: 수행 작업
   - `start` / `send` / `recv` / `status` / `stop`
+  - `set_url` — f_http_relay 전용, 채널 중계 URL 1회 설정
 - $$channel: 채널 이름 (자유 문자열, 예: `ab`, `dev`)
 - $$as: 자기 세션 식별자 (예: `session_a`)
 - $$to: 받는 세션 식별자 (`send` 시)
@@ -73,19 +80,23 @@ skill_ipc_control/
  │   ├─ b_watcher_monitor/
  │   ├─ c_hook_autoread/     (README only)
  │   ├─ d_external_queue/    (README only)
- │   └─ e_mcp_server/        (README only)
+ │   ├─ e_mcp_server/        (README only)
+ │   └─ f_http_relay/        (server.mjs + RUNBOOK + scripts/{cmd,ps1})
+ │       (a·b·f의 실행 스크립트는 각 method의 scripts/ 하위에 격납)
  ├─ tools/                   ← 런타임 데이터 시각화·관리 보조 앱 (외부 의존 허용)
  │   └─ web_monitor/         ← IPC 모니터링 웹앱 (Node + Vanilla JS, MVP 구현)
  ├─ docs/plans/              ← 기획 산출물
  └─ channels/                ← 런타임 인스턴스 (gitignore)
      └─ <channel>/
-         ├─ inbox.log              (JSON Lines, 모든 메시지 누적)
-         ├─ .read_<as>             (처리한 메시지 id 셋)
-         └─ .watcher_<as>.pid      (watcher 띄웠을 때만 존재)
+         ├─ inbox.log              (JSON Lines, 모든 메시지 누적 — A·B)
+         ├─ .read_<as>             (처리한 메시지 id 셋 — A·B)
+         ├─ .relay_url             (중계 URL — f_http_relay)
+         ├─ .cursor_<as>           (마지막 본 봉투 id — f_http_relay)
+         └─ .watcher_<as>.pid      (watcher 띄웠을 때만 존재 — B·f)
 ```
 
 ### 디렉토리 컨벤션
-- `methods/` = **IPC 통신 메서드 자체**. 의존 0, OS 셸 스크립트만. 가볍게 portable
+- `methods/` = **IPC 통신 메서드 자체**. 의존 0, OS 셸 스크립트만. 가볍게 portable. 실행 스크립트는 각 `methods/<name>/scripts/`에 격납
 - `tools/` = **런타임을 시각화·관리하는 보조 앱**. Node·Python 등 외부 의존 허용. 사용자 설치 단계 1회 필요
 - `channels/` = **런타임 인스턴스**. gitignore 처리, 빈 디렉토리는 첫 send 시 자동 생성
 - `docs/plans/` = **기획 산출물**. skill 자체 진화 기록 보관
@@ -134,8 +145,8 @@ skill_ipc_control/
 ## Step 2. action 디스패치
 
 ### a_manual_polling
-- `send`: `methods/a_manual_polling/send.cmd <channel> <from> <to> <message>` 호출
-- `recv`: `methods/a_manual_polling/recv.cmd <channel> <as>` 호출
+- `send`: `methods/a_manual_polling/scripts/send.cmd <channel> <from> <to> <message>` 호출
+- `recv`: `methods/a_manual_polling/scripts/recv.cmd <channel> <as>` 호출
 - `start`/`stop`: 해당 없음 (watcher 없음 — manual)
 - `status`: `channels/<channel>/` 디렉토리 조회로 대체
 
@@ -149,14 +160,29 @@ skill_ipc_control/
        - **stale (프로세스 미존재)** → 사용자에게 PID·channel·as 보고 후 **동의 확인**, 동의 시 PID 파일 삭제 → 1단계로 진행
      - 자동 삭제 금지 — 사용자 동의 없이는 stale이라도 보존
   1. `Monitor` 도구로 직접 기동:
-     - 호출: `Monitor(command="~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd <channel> <as>", persistent=true)`
+     - 호출: `Monitor(command="~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/scripts/start_watcher.cmd <channel> <as>", persistent=true)`
      - watcher stdout (JSON Lines, 한 줄 = 한 메시지) → 한 notification으로 인입
      - 세션 lifespan 동안 유지, 종료는 `stop_watcher.cmd`
      - 중간 필터 금지 (grep/awk/sed/`|`) — `# Mandatory Behavior 3` 및 `## broadcast / 그룹 라우팅` 정책과 일관
      - 안티패턴: `Bash(run_in_background: true)`로 띄우는 방식 — 완료 시 1회 알림이라 watcher의 무한 tail 특성과 불일치, 채택 금지
-- `send`: `methods/b_watcher_monitor/send.cmd <channel> <from> <to> <message>` 호출
-- `stop`: `methods/b_watcher_monitor/stop_watcher.cmd <channel> <as>` 호출 (PID 파일 기반)
+- `send`: `methods/b_watcher_monitor/scripts/send.cmd <channel> <from> <to> <message>` 호출
+- `stop`: `methods/b_watcher_monitor/scripts/stop_watcher.cmd <channel> <as>` 호출 (PID 파일 기반)
 - `status`: `channels/<channel>/.watcher_<as>.pid` 존재 + tasklist로 alive 확인
+
+### f_http_relay
+- `set_url` (최초 1회): `methods/f_http_relay/scripts/set_url.cmd <channel> <url>` 호출 — 채널의 중계 URL을 `.relay_url`에 기록
+- `send`: `methods/f_http_relay/scripts/send.cmd <channel> <from> <to> <message>` 호출 (POST /send, 서버가 id·ts 부여)
+  - `.relay_url` 미존재 시 → `set_url` 먼저 안내
+- `start`:
+  0. **사전 점검 (stale PID 검증)** — b_watcher_monitor와 동일 (`channels/<channel>/.watcher_<as>.pid` alive/stale 판정, stale은 사용자 동의 후 삭제)
+  1. `Monitor` 도구로 기동:
+     - 호출: `Monitor(command="~/.claude/skills/skill_ipc_control/methods/f_http_relay/scripts/start_watcher.cmd <channel> <as>", persistent=true)`
+     - watcher가 `/recv?since=<커서>` 폴링 → 새 봉투(JSON Lines)를 가공 없이 stdout → notification 인입
+     - 중간 필터 금지 (`# Mandatory Behavior 3`·`## broadcast / 그룹 라우팅` 정책과 일관)
+     - 폴링 주기 기본 2초 (env `IPC_POLL_SEC`로 조정), 매칭은 stage 5 수신 LLM이 수행
+     - 전제: 중계 서버(`server.mjs`)·외부 도달 URL은 사용자가 가동 (`methods/f_http_relay/RUNBOOK.md` 참조)
+- `stop`: `methods/f_http_relay/scripts/stop_watcher.cmd <channel> <as>` 호출 (PID 기반, 커서 `.cursor_<as>` 보존)
+- `status`: `channels/<channel>/.watcher_<as>.pid` alive + `.relay_url` 존재 확인
 
 ### c_hook_autoread / d_external_queue / e_mcp_server
 - 구현 예정 안내
@@ -173,12 +199,15 @@ skill_ipc_control/
 - 항목: id, ts, from, body
 - 없으면 `NO_NEW` 라인 그대로 표시
 
-### start (b만)
-- watcher PID, channel, as
+### start (b·f)
+- watcher PID, channel, as (f는 url·since 포함)
 - Monitor 구독 안내
 
-### stop (b만)
+### stop (b·f)
 - 종료된 PID
+
+### set_url (f만)
+- 기록된 channel·url
 
 # Error Handling
 - $$method 미지원/오타 → 지원 method 목록 출력 (`methods/` 디렉토리 스캔)
@@ -208,6 +237,7 @@ skill_ipc_control/
 | c_hook_autoread | 학습 자료 | settings.json hook으로 매 턴 자동 inbox 주입 (침습적) |
 | d_external_queue | 학습 자료 | SQLite/Redis 큐로 구조화·다중 세션 라우팅 |
 | e_mcp_server | 학습 자료 | 커스텀 MCP 서버로 도구 추상화 |
+| f_http_relay | MVP | HTTP 중계 서버 경유 디바이스간 IPC — 봉투+id 커서, 폴링 watcher |
 
 # Tool Index
 
@@ -223,6 +253,6 @@ tools/ 사용 전 1회: 해당 디렉토리에서 `npm install`. 자세한 실�
 - 모든 명령은 사용자 명시 트리거에서만 수행 (실행 보조 모드)
 
 # Extension Notes
-- bin/ 디렉토리 없음 (의도적). methods/<name>/*.cmd 직접 호출
+- bin/ 디렉토리 없음 (의도적). methods/<name>/scripts/*.cmd 직접 호출
 - 손에 익은 후 공통 인터페이스가 보이면 추후 bin/ 디스패처 추가 가능
-- 신규 method 추가 시 methods/<new>/ 디렉토리 + README + cmd 묶음 추가만으로 확장
+- 신규 method 추가 시 methods/<new>/ 디렉토리 + README + scripts/(cmd·ps1 묶음) 추가만으로 확장

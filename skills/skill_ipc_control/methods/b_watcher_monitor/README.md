@@ -60,9 +60,9 @@ Claude Code의 `Monitor` 도구와 짝지어 사용.
 
 | 작업 | 사용 도구 | 정확한 호출 형태 |
 |---|---|---|
-| watcher 가동 | **Monitor** | `Monitor(command="~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd <ch> <as>", persistent=true)` |
-| 메시지 발신 | **Bash** | `~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/send.cmd <ch> <from> <to> "<body>"` |
-| watcher 종료 | **Bash** | `~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/stop_watcher.cmd <ch> <as>` |
+| watcher 가동 | **Monitor** | `Monitor(command="~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/scripts/start_watcher.cmd <ch> <as>", persistent=true)` |
+| 메시지 발신 | **Bash** | `~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/scripts/send.cmd <ch> <from> <to> "<body>"` |
+| watcher 종료 | **Bash** | `~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/scripts/stop_watcher.cmd <ch> <as>` |
 
 ### 매칭이 깨지는 패턴 (사용 금지)
 - ❌ **`Bash(run_in_background:true)`로 watcher 호출** — watcher는 `Get-Content -Wait`로 무한 실행이라 "완료 시 1회 알림" 모델과 불일치. SKILL.md `# Mandatory Behavior 3` 안티패턴. `Bash(start_watcher.cmd:*)` prefix는 last-resort 가드 호환을 위해 settings.json에 보존되나 LLM이 직접 사용 금지
@@ -74,10 +74,10 @@ Claude Code의 `Monitor` 도구와 짝지어 사용.
 
 ### 등록된 prefix (settings.json 사본)
 ```
-Bash(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/send.cmd:*)
-Bash(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd:*)
-Bash(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/stop_watcher.cmd:*)
-Monitor(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd:*)
+Bash(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/scripts/send.cmd:*)
+Bash(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/scripts/start_watcher.cmd:*)
+Bash(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/scripts/stop_watcher.cmd:*)
+Monitor(~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/scripts/start_watcher.cmd:*)
 ```
 
 ### 메시지 본문에 `%` 포함 시 주의 (cmd batch 함정)
@@ -183,7 +183,7 @@ stop_watcher.cmd <channel> <as>
 ```
 [1] watcher 가동 (Monitor 단일 호출)
     LLM: Monitor(
-           command="~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/start_watcher.cmd ab session_b",
+           command="~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/scripts/start_watcher.cmd ab session_b",
            persistent=true
          )
     → Monitor가 .cmd 진입 + stdout 구독 동시 수행
@@ -191,10 +191,10 @@ stop_watcher.cmd <channel> <as>
     → 이후 새 라인이 system reminder 형태로 인입
 
 [2] 메시지 보내기 (필요 시)
-    Bash: ~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/send.cmd ab session_b session_a "hello back"
+    Bash: ~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/scripts/send.cmd ab session_b session_a "hello back"
 
 [3] 종료 시
-    Bash: ~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/stop_watcher.cmd ab session_b
+    Bash: ~/.claude/skills/skill_ipc_control/methods/b_watcher_monitor/scripts/stop_watcher.cmd ab session_b
 ```
 
 ## 장단점

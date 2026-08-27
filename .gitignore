@@ -29,6 +29,9 @@
 # 관리: 사용자 글로벌 설정
 !settings.json
 
+# 관리: 상태줄 스크립트
+!statusline-command.sh
+
 # 관리 안함: skill 런타임 디렉토리 (IPC 채널 등)
 skills/*/channels/
 

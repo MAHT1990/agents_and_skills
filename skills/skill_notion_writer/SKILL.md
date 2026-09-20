@@ -17,6 +17,11 @@ description: 마크다운 기술 문서(파일/디렉토리)·외부 기술 문�
 - $$global_rule_page: Notion 템플릿 전역규칙 페이지명 (선택, default: "TEMPLATEs>")
 - $$template_page: Notion 템플릿 페이지명 (선택, default: "TEMPLATEs> STUDY") — '정해진 TEMPLATE'의 출처
 - $$flowchart_page: mermaid 다이어그램 참고 페이지명 (선택, default: "TEMPLATEs> FLOWCHART")
+- $$depth: 노트 깊이 (선택, enum: L1 | L2 | L3, default: L1)
+  - L1: 한 번 읽고 무엇인지 아는 수준 (다시 읽을 때 30초)
+  - L2: 실제로 쓸 수 있는 수준 (다시 읽을 때 3분)
+  - L3: 깊이 파는 수준 (증명·엣지케이스·실측)
+  - 정의·섹션별 상한의 정본은 $$template_page 의 "깊이" 절 — 본 파일에 상한 숫자·섹션 목록을 복사하지 않음
 
 ## 모드별 변수
 - $$mode 확정 후 로드되는 `$$mode_ref` 에 정의됨 (Progressive Disclosure)
@@ -86,6 +91,8 @@ description: 마크다운 기술 문서(파일/디렉토리)·외부 기술 문�
 - $$parent_page: Notion 부모 페이지 이름 (필수, 능동 수집)
 - $$page_title: 생성할 페이지 제목 (선택)
 - $$global_rule_page / $$template_page / $$flowchart_page: default 보유 → 미지정 시 자동 적용 (능동 질의 안 함)
+- $$depth: default L1 → 미지정 시 자동 적용 (능동 질의 안 함)
+  - 사용자 발화에 깊이 단서("L2", "자세히", "깊게", "실측까지" 등)가 있으면 추출하여 적용
 
 **(4) 모드별 변수 수집**
 - $$mode_ref 의 `## 변수` 에 정의된 필수 변수만 능동 수집 (타 모드 변수는 질의하지 않음)
@@ -119,6 +126,7 @@ Human이 최종 승인할 때까지 회의를 반복한다.
 - notion-search로 $$parent_page 검색 → ID 확보
 - $$global_rule_page 지정 시, notion-search + notion-fetch로 전역규칙 파악
 - $$template_page 지정 시, notion-search + notion-fetch로 템플릿 구조 파악
+  - 템플릿의 깊이 표(섹션별 상한)·섹션 체크리스트·표기 규칙을 함께 파악
 - $$flowchart_page 지정 시, notion-search + notion-fetch로 다이어그램 템플릿 파악
 - 동일 제목 기존 페이지 존재 여부 확인
 
@@ -126,11 +134,19 @@ Human이 최종 승인할 때까지 회의를 반복한다.
 - 페이지 제목 확인
 - 단일 페이지 vs 다중 페이지(챕터별) 선택
 - 템플릿 섹션별 매핑 계획 제시 및 확인
+  - $$depth 기준으로 쓰는 섹션과 생략하는 섹션을 구분하여 제시
+  - 생략 섹션은 나중에 쓸 후보 주제를 이름으로 제시
 - 기존 페이지 존재 시 덮어쓰기/수정/신규 선택
 
 ## Step 4. 콘텐츠 매핑 및 페이지 생성
 - $$notion-enhanced-markdown 스펙에 따라 콘텐츠 변환
 - 템플릿 구조에 맞춰 섹션 매핑
+- $$depth 적용 (템플릿에 깊이 절이 있는 경우)
+  - 제목 아래 메타 줄(레벨·작성일·조사 범위·다음 확장) 작성
+  - 섹션별 개수는 템플릿 깊이 표의 상한 이내 — 상한은 채우는 값이 아님
+  - 해당 깊이에서 쓰지 않는 섹션은 삭제하지 않고 제목 + 후보 줄(`((L2 에서 작성. 후보: …))`)만 작성, 자리는 템플릿 규칙을 따름
+  - 상한 때문에 뺀 내용은 후보 줄·메타 줄의 "다음 확장"에 주제 이름으로만 기록
+- 출처가 직접 말한 것이 아니라 출처들을 엮어 끌어낸 표·다이어그램·항목은 제목 끝에 `(해석)` 표기
 - notion-create-pages로 페이지 생성
 - 기존 페이지 수정 시 notion-update-page 사용
 
@@ -140,7 +156,10 @@ Human이 최종 승인할 때까지 회의를 반복한다.
 - 아래 공통 Checklist + $$mode_ref 의 `## Completeness 추가 항목` 을 모두 통과해야 완료 처리한다.
 
 ### Completeness Checklist (공통)
-- [ ] 핵심 개념(Key concepts)이 누락 없이 모두 추출되었는가?
+- [ ] 핵심 개념(Key concepts)이 $$depth 상한 안에서 선별되었는가? 뺀 내용은 후보 줄·"다음 확장"에 이름으로 남았는가?
+- [ ] 섹션별 개수가 템플릿 깊이 표의 상한 이내인가?
+- [ ] 메타 줄이 있고, 생략 섹션이 제목 + 후보 줄로 표기되었는가?
+- [ ] 적용 후 notion-fetch 결과에서 Notion 함정이 없는가? (제목 줄의 `{color}`·`{toggle}` 속성 유지, 표 칸 줄머리 기호, 이스케이프 — $$notion-enhanced-markdown 주의사항 참조)
 - [ ] 중요한 코드 예시가 원형(syntax/시그니처) 그대로 포함되었는가?
 - [ ] 경고사항/주의점/deprecation 표기가 명시되었는가?
 - [ ] 버전 정보가 원문에 존재하는 경우 페이지에 보존되었는가?
@@ -170,6 +189,7 @@ Human이 최종 승인할 때까지 회의를 반복한다.
 - (research) research_topic: {$$research_topic} / research_requirements: {$$research_requirements}
 - parent_page: {$$parent_page}
 - template_page: {$$template_page}
+- depth: {$$depth}
 - page_title: {$$page_title}
 
 ### 결과

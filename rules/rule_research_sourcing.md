@@ -9,7 +9,7 @@ description: 조사가 필요한 작업은 학습 지식만으로 답하지 말�
 
 ## 적용 컨텍스트
 - 대화 중 사실·지식·정의·수치·최신 동향·비교를 묻는 질문
-- 조사·리서치가 산출에 포함되는 SKILL (plan_competitor_researcher·plan_tech_researcher, skill_notion_writer research, skill_guide_doc, skill_student·skill_sangmin 등)
+- 조사·리서치가 산출에 포함되는 SKILL (plan_competitor_researcher·plan_tech_researcher, skill_notion_writer research, skill_guide_doc, skill_sangmin 등)
 - "찾아줘 / 조사해줘 / 맞아? / 최신 …" 류 요청
 
 ## 스킵 컨텍스트

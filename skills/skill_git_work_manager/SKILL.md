@@ -7,8 +7,8 @@ description: 모든 git 작업에 대한 매니저 스킬. -발동조건1. git �
 - $$working_repo (필수) — 작업 대상 레포 (owner/repo)
 - $$template_repo (필수, default: CrowsGear/.github) — issue/PR 템플릿 레포
 - $$mode (필수, enum: hierarchical | daily | simple, default: simple) — 운영 모드 선택
-  - hierarchical: 신규 팀 정책 (Parent–Sub 계층 + GitHub Project + 모노레포 프리픽스 + 머지 전략 분리)
-  - daily: 기존 daily_job 흐름 (legacy, 언제든 재사용 가능)
+  - hierarchical: 신규 팀 정책 (Parent–Sub 계층 + GitHub Project + 모노레포 프리픽스 + 머지 전략 분리). 브랜치·이슈·커밋·push·PR 등 git 작업만 수행
+  - daily: 기존 daily_job 흐름 (legacy, 언제든 재사용 가능). 브랜치·이슈·커밋·push·PR 등 git 작업만 수행
   - simple: 메타 작업(issue/PR/project) 없이 순수 git CLI 명령만 단발 수행
 
 # Rules

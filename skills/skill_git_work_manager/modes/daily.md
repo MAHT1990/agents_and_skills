@@ -71,26 +71,21 @@
 ## Step 4. checkout
 - Step3 의 sub_issue branch 에 checkout
 
-## Step 5. 사용자 작업 수행
-- Test Scenario 작성 작업을 명시할 때까지 대기.
+## Step 5. 커밋 · push (sub_issue branch)
+- Step3 의 sub_issue branch 위에서만 수행한다
+- 사용자 또는 루프 세션의 지시가 있을 때만 수행한다
+- 지시에는 범위(파일 목록)와 커밋 메시지가 반드시 포함되어야 한다. 없으면 수행하지 않고 지시자에게 재요청한다
+- 커밋 전 `git status --short` 로 워킹트리 변경을 지시 범위와 대조한다
+  - 범위 밖 변경이 있으면 커밋하지 않고, 범위 밖 파일 목록을 보고한다
+- 지시 범위의 파일만 stage 한다 (`git add -A` · `git add .` 사용 금지)
+- 커밋 메시지 형식: `[{LABEL}] {description} (#{issue_number})`
+  - 지시에 포함된 추가 줄(Co-Authored-By 등)은 그대로 포함한다
+- `git push` 후 결과를 보고한다
+  - 커밋 해시 · 커밋된 파일 수 · push 결과 · 워킹트리 clean 여부
+- 금지: `git rebase` · `git push --force` / `--force-with-lease` · `git reset --hard`
 
-## Step 6. Test Scenario 작성
-- Step5 의 작업 내용에 대한 Test Scenario 작성
-- skill: skill_test_scenario 사용
-
-## Step 7. Test Scenario에 따른 수정방안 제시
-- Step6 의 Test Scenario 에 따른 수정방안 제시
-
-## Step 8. 추가 사용자 작업
-- Test 종료 명시할 때까지 Step5 ~ Step8 Loop
-
-## Step 9. 작업 LOOP 종료. Guide 문서 작성 with skill: skill_guide_doc
-- Test 종료 명시
-- 작업 내용에 대한 /docs/guide 문서 수정
-- skill: skill_guide_doc 사용
-
-## Step 10. Pull Request 생성
-- Step9 의 작업 내용에 대한 Pull Request 생성
+## Step 6. Pull Request 생성
+- Step5 에서 커밋 · push 한 작업에 대한 Pull Request 생성 (PR 규칙 참조)
 
 # Output
 - Step별 전체 작업 요약
@@ -98,9 +93,5 @@
   - Step2. Daily Job Issue +alpha
   - Step3. sub_issue 등록 +alpha
   - Step4. checkout +alpha
-  - Step5. (verbose) 사용자 작업 수행 +alpha
-  - Step6. Test Scenario 작성 +alpha
-  - Step7. Test Scenario에 따른 수정방안 제시 +alpha
-  - Step8. 추가 사용자 작업 +alpha
-  - Step9. 작업 LOOP 종료. Guide 문서 작성 +alpha
-  - Step10. Pull Request 생성 +alpha
+  - Step5. 커밋 · push 결과 (커밋 해시, 파일 수, push 결과, 워킹트리 clean 여부, 범위 밖 파일 목록)
+  - Step6. Pull Request 생성 +alpha

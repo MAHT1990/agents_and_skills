@@ -14,8 +14,8 @@
 - $$user_initial (필수, default: "kbs")
 - $$is_monorepo (자동감지, bool)
 - $$mono_prefix (조건부 필수, enum: vue | electron) — $$is_monorepo=true일 때
-- $$release_project (선택; Step 11에서만 사용)
-- $$release_version (선택; Step 11에서만 사용)
+- $$release_project (선택; Step 7에서만 사용)
+- $$release_version (선택; Step 7에서만 사용)
 
 # Rules
 
@@ -74,7 +74,7 @@
 ## Commit 규칙
 - 커밋 메시지 형식: `[{LABEL}] {description} (#{issue_number})`
   - ex. `[FEAT] add login form widget (#32)`
-- 사용자가 명시하지 않는 한 자동 커밋 금지
+- 사용자 또는 루프 세션의 지시가 없으면 커밋하지 않는다. 지시받은 범위와 메시지로만 커밋한다
 - 작업은 Sub Branch 위에서만 수행
 
 # Steps
@@ -107,26 +107,20 @@
 ## Step 3. Sub Branch checkout
 - 현재 브랜치가 Main/Dev/Parent 가 아닌지 가드 후 Sub Branch checkout
 
-## Step 4. 사용자 작업 수행
-- Sub Branch 위에서 작업 진행
-- Test Scenario 작성 명시까지 대기
-- 사용자가 Main/Dev/Parent로 이동 시도 시 경고
+## Step 4. 커밋 · push (Sub Branch)
+- Sub Branch 위에서만 수행한다
+- 사용자 또는 루프 세션의 지시가 있을 때만 수행한다
+- 지시에는 범위(파일 목록)와 커밋 메시지가 반드시 포함되어야 한다. 없으면 수행하지 않고 지시자에게 재요청한다
+- 커밋 전 `git status --short` 로 워킹트리 변경을 지시 범위와 대조한다
+  - 범위 밖 변경이 있으면 커밋하지 않고, 범위 밖 파일 목록을 보고한다
+- 지시 범위의 파일만 stage 한다 (`git add -A` · `git add .` 사용 금지)
+- 커밋 메시지 형식: `[{LABEL}] {description} (#{issue_number})`
+  - 지시에 포함된 추가 줄(Co-Authored-By 등)은 그대로 포함한다
+- `git push` 후 결과를 보고한다
+  - 커밋 해시 · 커밋된 파일 수 · push 결과 · 워킹트리 clean 여부
+- 금지: `git rebase` · `git push --force` / `--force-with-lease` · `git reset --hard`
 
-## Step 5. Test Scenario 작성
-- skill: `skill_test_scenario` 호출
-- Step 4 작업 내용에 대한 Test Scenario 도출
-
-## Step 6. Test Scenario 에 따른 수정방안 제시
-- Step 5 산출물 기반 수정 포인트 정리
-
-## Step 7. 추가 사용자 작업 (Loop)
-- Test 종료 명시까지 Step 4 ~ Step 6 반복
-
-## Step 8. Guide 문서 작성
-- skill: `skill_guide_doc` 호출
-- 작업 내용에 대한 `/docs/guide` 문서 작성/수정
-
-## Step 9. Sub → Parent Pull Request 생성
+## Step 5. Sub → Parent Pull Request 생성
 - base = Parent Branch, head = Sub Branch
 - merge method: **Squash and Merge**
 - title: `[{$$sub_label}]{작업내용} (#{sub_issue_number})`
@@ -135,14 +129,14 @@
   - `Parent: #{parent_issue_number}`
 - 머지 후 사용자에게 "Sub Branch 추가 작업 지양" 경고 출력
 
-## Step 10. (옵션) Parent → Dev 통합 PR
+## Step 6. (옵션) Parent → Dev 통합 PR
 - 사용자가 명시 요청한 경우에만 진행
 - base = dev, head = Parent Branch
 - merge method: **Merge Commit**
 - title: `{YYYY-MM-DD}/{ParentBranchName}` (오늘 날짜 자동)
 - body: 본 Parent에 머지된 Sub PR/Issue 목록 정리
 
-## Step 11. (옵션) Dev → Main 릴리스 PR
+## Step 7. (옵션) Dev → Main 릴리스 PR
 - 사용자가 명시 요청한 경우에만 진행
 - $$release_project, $$release_version 사용자 입력
 - base = main, head = dev
@@ -162,11 +156,7 @@
   - Step 1. Parent Issue/Branch (번호, URL, branch명, project 설정 여부, mono_prefix)
   - Step 2. Sub Issue/Branch (번호, URL, branch명, 템플릿, sub_issue 연결 결과)
   - Step 3. checkout 결과
-  - Step 4. (verbose) 사용자 작업 내역
-  - Step 5. Test Scenario 산출물
-  - Step 6. 수정방안
-  - Step 7. Loop 횟수
-  - Step 8. Guide 문서 경로
-  - Step 9. Sub→Parent PR URL, merge 방식
-  - Step 10. (옵션) Parent→Dev PR URL
-  - Step 11. (옵션) Dev→Main 릴리스 PR URL
+  - Step 4. 커밋 · push 결과 (커밋 해시, 파일 수, push 결과, 워킹트리 clean 여부, 범위 밖 파일 목록)
+  - Step 5. Sub→Parent PR URL, merge 방식
+  - Step 6. (옵션) Parent→Dev PR URL
+  - Step 7. (옵션) Dev→Main 릴리스 PR URL

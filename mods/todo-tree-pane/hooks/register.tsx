@@ -3,13 +3,40 @@ import type { EngineInterface, Register } from 'claude-code'
 
 import type { TodoItem, TodoStatus } from '../types'
 
+const PLUGIN = 'todo-tree-pane'
 const PANE = 'todo-tree'
 const TITLE = 'Todo Tree'
+const TOOL = 'todo'
+// The name the model calls the tool by, as the engine lists a plugin's tool.
+const TOOL_ID = `mcp__${PLUGIN}__${TOOL}`
 // How many open rows the band above the prompt lists before "+n more".
 const BAND_ROWS = 6
 
 const items = atom({ plugin: 'todo-tree-pane', key: 'items' } as const, [])
 const band = atom({ plugin: 'todo-tree-pane', key: 'band' } as const, true)
+const seq = atom({ plugin: 'todo-tree-pane', key: 'seq' } as const, 0)
+
+const SPEC = {
+  name: TOOL,
+  description:
+    'Keeps the Todo Tree drawn above the prompt: the plan of the current work as a tree. ' +
+    '"add" a row (subject; optional parent id to hang it under, status, activeForm); ' +
+    '"update" a row (id, then status pending|in_progress|completed, subject, activeForm, parent; parent "none" makes it a root); ' +
+    '"remove" a row (id); "list" the tree; "clear" the completed rows. ' +
+    'Ids are t1, t2, ... as add and list answer them. Keep subjects to one short line.',
+  inputSchema: {
+    type: 'object',
+    properties: {
+      action: { type: 'string', enum: ['add', 'update', 'remove', 'list', 'clear'] },
+      id: { type: 'string', description: 'The row id (t1, t2, ...) for update and remove' },
+      subject: { type: 'string', description: 'The row, one short line' },
+      parent: { type: 'string', description: 'The id of the row this one hangs under; "none" for a root' },
+      status: { type: 'string', enum: ['pending', 'in_progress', 'completed'] },
+      activeForm: { type: 'string', description: 'What is being done while in_progress, one short line' },
+    },
+    required: ['action'],
+  },
+}
 
 type Row = { item: TodoItem; depth: number }
 
@@ -34,6 +61,9 @@ const asRecord = (value: unknown): Record<string, unknown> | undefined =>
 
 const asStrings = (value: unknown): string[] =>
   Array.isArray(value) ? value.filter((one): one is string => typeof one === 'string') : []
+
+const asText = (value: unknown): string | undefined =>
+  typeof value === 'string' && value.trim() !== '' ? value.trim() : undefined
 
 // Lays the flat list out as a tree: an item hangs under the first blocker the
 // list knows; an item blocked by nothing known is a root. A cycle ends at the
@@ -88,6 +118,79 @@ const byOrder = (before: TodoItem[]) => {
   const index = new Map(before.map((one, at) => [one.id, at] as const))
   return (a: TodoItem, b: TodoItem) =>
     (index.get(a.id) ?? before.length) - (index.get(b.id) ?? before.length)
+}
+
+// The tree as the model reads it: one line per row, indented as drawn.
+const listing = (list: TodoItem[]) =>
+  list.length === 0
+    ? 'Todo tree is empty.'
+    : layout(list)
+        .map(({ item, depth }) => `${'  '.repeat(depth)}${glyph(item.status)} ${item.id} ${item.subject}`)
+        .join('\n')
+
+// The model keeps the tree through this tool; the engine takes the result as
+// text, so every answer is a line, then the tree.
+const runTodoTool = async ($: EngineInterface, raw: Record<string, unknown>) => {
+  try {
+    const input = asRecord(raw.input) ?? raw
+    const action = asText(input.action) ?? 'list'
+    const id = asText(input.id)
+    const subject = asText(input.subject)
+    const parent = asText(input.parent)
+    const activeForm = asText(input.activeForm)
+    const status = isStatus(input.status) ? input.status : undefined
+    const answer = async (head: string) => ({ result: `${head}\n${listing(await read($, items))}` })
+
+    if (action === 'add') {
+      if (!subject) return { result: 'Error: add needs a subject' }
+      await update($, seq, n => n + 1)
+      const created: TodoItem = {
+        id: `t${await read($, seq)}`,
+        subject,
+        status: status ?? 'pending',
+        blockedBy: parent && parent !== 'none' ? [parent] : [],
+        activeForm,
+        source: 'task',
+      }
+      await record($, list => [...list, created])
+      return answer(`Added ${created.id}: ${created.subject}`)
+    }
+    if (action === 'update') {
+      if (!id) return { result: 'Error: update needs an id' }
+      let found = false
+      await record($, list =>
+        list.map(one => {
+          if (one.id !== id) return one
+          found = true
+          return {
+            ...one,
+            subject: subject ?? one.subject,
+            status: status ?? one.status,
+            activeForm: activeForm ?? one.activeForm,
+            blockedBy: parent === undefined ? one.blockedBy : parent === 'none' ? [] : [parent],
+          }
+        }),
+      )
+      return found ? answer(`Updated ${id}`) : { result: `Error: no row ${id}` }
+    }
+    if (action === 'remove') {
+      if (!id) return { result: 'Error: remove needs an id' }
+      let found = false
+      await record($, list => {
+        found = list.some(one => one.id === id)
+        return list.filter(one => one.id !== id)
+      })
+      return found ? answer(`Removed ${id}`) : { result: `Error: no row ${id}` }
+    }
+    if (action === 'clear') {
+      await record($, list => list.filter(one => one.status !== 'completed'))
+      return answer('Completed rows removed.')
+    }
+    return { result: listing(await read($, items)) }
+  } catch (err) {
+    $.ui.log(`${PLUGIN}: tool call failed: ${String(err)}`, { to: 'debug' })
+    return { result: `Error: ${String(err)}` }
+  }
 }
 
 // The /todo-tree command: the band by default, the docked pane on request.
@@ -160,6 +263,7 @@ const runTodoTree = async (
 
 export const register: Register = on => {
   on('session.start', async ($, e, next) => {
+    await $.tool.register(SPEC)
     await $.command.register({
       name: 'todo-tree',
       description: 'Show the task/todo tree above the prompt',
@@ -170,6 +274,8 @@ export const register: Register = on => {
   })
 
   on('command.run', { command: 'todo-tree' }, ($, e) => runTodoTree($, e))
+
+  on('tool.call', { tool: new RegExp(`^${TOOL_ID}$`) }, ($, e) => runTodoTool($, Object(e)))
 
   on('tool.call', { tool: 'TaskCreate' }, async ($, e, next) => {
     const ran = await next(e)
@@ -337,7 +443,7 @@ export const register: Register = on => {
         </Box>
         {list.length === 0 && (
           <Text dimColor wrap="wrap">
-            No tasks yet. TaskCreate, TaskUpdate and TodoWrite calls appear here.
+            No rows yet. The todo tool, and TaskCreate · TodoWrite calls, fill this tree.
           </Text>
         )}
         {rows.map(({ item, depth }) => {

@@ -119,13 +119,13 @@ test('/todo-tree demo seeds a three-level tree and /todo-tree clear empties it',
 
   await run('clear')
   const empty = await $.ui.mount({ plugin: PLUGIN, surface: 'terminal', ...PANE })
-  expect(await empty.find({ type: 'Text', text: /No tasks yet/ })).toBeDefined()
+  expect(await empty.find({ type: 'Text', text: /No rows yet/ })).toBeDefined()
   await empty.unmount()
 })
 
 test('the pane with nothing tracked says so', async $ => {
   const ui = await $.ui.mount({ plugin: PLUGIN, surface: 'terminal', ...PANE })
-  expect(await ui.find({ type: 'Text', text: /No tasks yet/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /No rows yet/ })).toBeDefined()
   await ui.unmount()
 })
 
@@ -177,4 +177,33 @@ test('the band above the prompt lists the open rows of the tree and hides on req
 
   expect((await run('show')).text).toMatch(/band shown: 2 item\(s\)/)
   expect((await run('status')).text).toMatch(/2 item\(s\) tracked; band shown/)
+})
+
+test('the todo tool grows the tree as text and the pane draws it', async ($, on) => {
+  on('ui.render', { component: 'AbovePrompt' }, ($, e) => h($.ui.resolve(e).Box, {}) as RenderElement)
+  const call = (input: Record<string, unknown>) =>
+    $.tool.call({ tool: 'mcp__todo-tree-pane__todo', ...input } as never)
+  const text = (ran: unknown) => String((ran as { result?: unknown }).result ?? '')
+
+  expect(text(await call({ action: 'list' }))).toBe('Todo tree is empty.')
+  expect(text(await call({ action: 'add', subject: 'Phase one' }))).toContain('Added t1: Phase one')
+  expect(text(await call({ action: 'add', subject: 'Decide the logger', parent: 't1' }))).toContain('Added t2')
+  expect(text(await call({ action: 'update', id: 't1', status: 'in_progress', activeForm: 'Shipping' }))).toContain('Updated t1')
+
+  const listed = text(await call({ action: 'list' }))
+  expect(listed).toContain('[>] t1 Phase one')
+  expect(listed).toContain('  [ ] t2 Decide the logger')
+
+  const band = await $.ui.mount({ plugin: PLUGIN, surface: 'terminal', ...BAND })
+  expect(await band.find({ type: 'Text', text: /Todo Tree 0/ })).toBeDefined()
+  expect(await band.find({ type: 'Text', text: /Phase one/ })).toBeDefined()
+  expect(await band.find({ type: 'Text', text: /Decide the logger/ })).toBeDefined()
+  await band.unmount()
+
+  expect(text(await call({ action: 'update', id: 't9', status: 'completed' }))).toBe('Error: no row t9')
+  expect(text(await call({ action: 'update', id: 't2', status: 'completed' }))).toContain('[x] t2')
+  expect(text(await call({ action: 'clear' }))).toContain('Completed rows removed.')
+  expect(text(await call({ action: 'list' }))).toBe('[>] t1 Phase one')
+  expect(text(await call({ action: 'remove', id: 't1' }))).toContain('Removed t1')
+  expect(text(await call({ action: 'list' }))).toBe('Todo tree is empty.')
 })

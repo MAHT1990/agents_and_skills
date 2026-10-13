@@ -15,6 +15,8 @@ declare module 'claude-code' {
       items: TodoItem[]
       /** Whether the band above the prompt is shown. */
       band: boolean
+      /** The last id the todo tool handed out. */
+      seq: number
     }
   }
 }

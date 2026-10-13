@@ -1,0 +1,7 @@
+{
+  "name": "agenda-pane",
+  "version": "0.1.0",
+  "description": "Keeps the topics under discussion with the user in a docked side pane, kept current by a tool the model calls and a /agenda command.",
+  "author": { "name": "MAHT1990" },
+  "types": "./types/index.d.ts"
+}

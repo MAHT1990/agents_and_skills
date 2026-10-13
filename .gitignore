@@ -51,3 +51,8 @@ skills/**/*.pid
 # OS
 .DS_Store
 Thumbs.db
+
+# 관리: 함수 훅 플러그인(mod) 디렉토리. 엔진이 로드 시 생성하는 타입 산출물은 제외
+!mods/
+!mods/**
+mods/*/.claude-plugin/types/

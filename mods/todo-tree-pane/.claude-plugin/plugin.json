@@ -1,0 +1,7 @@
+{
+  "name": "todo-tree-pane",
+  "version": "0.1.0",
+  "description": "Shows the session's task/todo list as a tree in a docked side pane, beside the transcript.",
+  "author": { "name": "MAHT1990" },
+  "types": "./types/index.d.ts"
+}

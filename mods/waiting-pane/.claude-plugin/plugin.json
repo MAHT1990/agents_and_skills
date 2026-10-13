@@ -1,0 +1,7 @@
+{
+  "name": "waiting-pane",
+  "version": "0.1.0",
+  "description": "Lists the messages this session sent to other sessions and still waits on, in a docked side pane; a peer's reply settles its row.",
+  "author": { "name": "MAHT1990" },
+  "types": "./types/index.d.ts"
+}

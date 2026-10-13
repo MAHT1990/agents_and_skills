@@ -44,6 +44,9 @@ skills/**/.env
 skills/**/*.log
 skills/**/*.pid
 
+# 관리 안함: claude.ai 계정 동기화 스킬 캐시 (Claude Code 자동 생성)
+skills/synced/
+
 # IDE
 .idea/
 .vscode/
